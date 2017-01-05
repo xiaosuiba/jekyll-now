@@ -87,4 +87,4 @@ exclude:
 
 # Building settings
 markdown: kramdown
-theme: chalk
+theme: jekyll-theme-cayman
