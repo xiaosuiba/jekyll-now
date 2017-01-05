@@ -84,3 +84,7 @@ exclude:
   - LICENSE
   - README.md
   - CNAME
+
+# Building settings
+markdown: kramdown
+theme: chalk
