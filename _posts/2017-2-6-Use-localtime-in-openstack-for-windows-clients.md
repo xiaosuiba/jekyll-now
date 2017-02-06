@@ -33,7 +33,7 @@ so, how to solve the problem? apprently there are two scenarios you may run into
 
 ## 1st. Set up at the very beginning
 
-Just create create the image with a property os_type=windows like this:
+Just create the image with a property os_type=windows like this:
 
 ```
 glance image-update --property os_type="windows" <IMAGE-ID>
@@ -46,13 +46,13 @@ If you've launched the instance without a os_type set before, you could hack the
 ```
 # mysql -u root -p
 $ use nova;
-$ UPDATE instances set os_type='windows' where hostname='uhrzeit-test';
-$ select hostname,os_type from instances WHERE hostname='uhrzeit-test';
-+--------------+---------+
-| hostname     | os_type |
-+--------------+---------+
-| uhrzeit-test | windows |
-+--------------+---------+
+$ update instances set os_type='windows' where uuid='485b15c4-7007-4112-aa99-d02c5bfbc4cd';
+$ select uuid,os_type from instances where uuid='485b15c4-7007-4112-aa99-d02c5bfbc4cd';
++--------------------------------------+---------+
+| uuid                                 | os_type |
++--------------------------------------+---------+
+| 485b15c4-7007-4112-aa99-d02c5bfbc4cd | windows |
++--------------------------------------+---------+
 ```
 
 Then reboot your VM(hard reboot).
