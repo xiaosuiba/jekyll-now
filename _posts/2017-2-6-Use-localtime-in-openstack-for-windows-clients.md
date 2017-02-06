@@ -29,9 +29,9 @@ def _set_clock(self, guest, os_type, image_meta, virt_type):
             self._set_kvm_timers(clk, os_type, image_meta)
 ```
 
-so, how to solve the problem? apprently there are two situations you may face.
+so, how to solve the problem? apprently there are two scenarios you may run into:
 
-## At the very beginning
+## 1st. Set up at the very beginning
 
 Just create create the image with a property os_type=windows like this:
 
@@ -39,7 +39,7 @@ Just create create the image with a property os_type=windows like this:
 glance image-update --property os_type="windows" <IMAGE-ID>
 ```
 
-## After instance launched
+## 2nd. Modify after instance launched
 
 If you've launched the instance without a os_type set before, you could hack the database manually to add a os_type for it:
 
@@ -55,4 +55,4 @@ $ select hostname,os_type from instances WHERE hostname='uhrzeit-test';
 +--------------+---------+
 ```
 
-Then reboot your VM.
+Then reboot your VM(hard reboot).
