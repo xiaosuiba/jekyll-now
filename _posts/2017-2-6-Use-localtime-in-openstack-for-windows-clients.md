@@ -1,9 +1,7 @@
 ---
 layout: post
 title: Use localtime in openstack for windows clients
-disqus: true
 ---
-# Use localtime in openstack for windows clients
 
 Recently we came across a issue in which a customer complained his windows client host timezone was always wrong. There's an 8 hours delay compares to the localtime(our customer were in China which uses UTC +8). Obviousely, it's an timezone problem. After googling and reading the source code of nova, I found something connected with this issue:
 
