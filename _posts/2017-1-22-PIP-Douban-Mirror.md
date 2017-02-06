@@ -2,9 +2,6 @@
 layout: post
 title: Pip Douban Mirror
 ---
-
-Hello!
----
 The official pip repository's download speed is extemely slow in China. We could use proxy or shadowsocks,  but thanks to Douban, we have another choice.
 
 ```shell
