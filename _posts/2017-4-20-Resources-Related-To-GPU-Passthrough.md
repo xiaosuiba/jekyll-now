@@ -12,9 +12,9 @@ GPU Passthrough with kvm sometimes could be a tough thing for a newbie. So here 
 
 And here are something about the Rest Issue of some model of AMD ATI cards:
 
-1. https://github.com/qemu/qemu/blob/master/hw/vfio/pci-quirks.c#L1697
-2. https://www.redhat.com/archives/vfio-users/2015-September/msg00467.html
-3. https://www.redhat.com/archives/vfio-users/2015-September/msg00051.html
+1. [pci-quirks](https://github.com/qemu/qemu/blob/master/hw/vfio/pci-quirks.c#L1697)
+2. [pass-through gpu to guest, but only once?!](https://www.redhat.com/archives/vfio-users/2015-September/msg00467.html)
+3. [vfio pass through only works once after reboot](https://www.redhat.com/archives/vfio-users/2015-September/msg00051.html)
 4. [Fixing AMD GPU Passthrough Reset Issues in Windows](https://curtisshoward.com/post/fixing-amd-gpu-passthrough-reset-issues-in-windows/)
 
 And this is a aweson sheet of test results of different kinds of graphic cards:
