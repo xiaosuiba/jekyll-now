@@ -35,7 +35,7 @@ Turn off validation for vboxwebsrv:
 
 ## 3. VirtualBox machine 'DHCP Connection timeout'
 
-![](../images/dhcp_timeout.png)
+![](/images/dhcp_timeout.png)
 
 first check the link between virtualbox vm and neutron dhcp service:
 
@@ -77,7 +77,7 @@ There will be a port has the same mac address as your virtualbox vm.
 
 ## 4.pxelinux.0 no such file or directory 
 
-![](../images/pxe0.png)
+![](/images/pxe0.png)
 
 Check you tftp service on openstack node first. Then check if the file `pxelinux.0` exists in that directory.
 
