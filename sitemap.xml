@@ -13,6 +13,11 @@
   </url>
   
   <url>
+    <loc>https://xiaosuiba.github.io/2019/02/02/incremental-traffic-management/</loc>
+    <lastmod>2019-02-02T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://xiaosuiba.github.io/post-skeleton/readme/</loc>
     <lastmod>2019-01-09T00:00:00+00:00</lastmod>
   </url>
@@ -161,7 +166,7 @@
   
   <url>
     <loc>https://xiaosuiba.github.io/tags/istio/</loc>
-    <lastmod>2018-06-04T00:00:00+00:00</lastmod>
+    <lastmod>2019-02-02T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -214,13 +219,13 @@
   
   <url>
     <loc>https://xiaosuiba.github.io/tags/service-mesh/</loc>
-    <lastmod>2018-04-11T09:32:00+00:00</lastmod>
+    <lastmod>2018-01-02T12:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://xiaosuiba.github.io/tags/service-mesh/</loc>
-    <lastmod>2018-01-02T12:00:00+00:00</lastmod>
+    <lastmod>2018-04-11T09:32:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -232,7 +237,7 @@
   
   <url>
     <loc>https://xiaosuiba.github.io/categories/tech/</loc>
-    <lastmod>2018-06-04T00:00:00+00:00</lastmod>
+    <lastmod>2019-02-02T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   

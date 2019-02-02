@@ -6,10 +6,19 @@
     <description>Recent content in Istio on ChrisLi&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 04 Jun 2018 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 02 Feb 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://xiaosuiba.github.io/tags/istio/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>增量式应用 Istio 第一部分，流量管理(译文)</title>
+      <link>https://xiaosuiba.github.io/2019/02/02/incremental-traffic-management/</link>
+      <pubDate>Sat, 02 Feb 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://xiaosuiba.github.io/2019/02/02/incremental-traffic-management/</guid>
+      <description>作者：Sandeep Parikh 翻译：李晶晶 原文：https://istio.io/blog/2018/incremental-traffic-man</description>
+    </item>
     
     <item>
       <title>Istio v1aplha3 routing API介绍(译文）</title>
