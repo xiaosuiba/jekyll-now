@@ -3,6 +3,11 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://xiaosuiba.github.io/2019/02/02/happy-spring-festival/</loc>
+    <lastmod>2019-02-02T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://xiaosuiba.github.io/2019/02/02/hello-world/</loc>
     <lastmod>2019-02-02T00:00:00+00:00</lastmod>
   </url>
@@ -209,13 +214,13 @@
   
   <url>
     <loc>https://xiaosuiba.github.io/tags/service-mesh/</loc>
-    <lastmod>2018-01-02T12:00:00+00:00</lastmod>
+    <lastmod>2018-04-11T09:32:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://xiaosuiba.github.io/tags/service-mesh/</loc>
-    <lastmod>2018-04-11T09:32:00+00:00</lastmod>
+    <lastmod>2018-01-02T12:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -232,14 +237,14 @@
   </url>
   
   <url>
-    <loc>https://xiaosuiba.github.io/categories/tips/</loc>
-    <lastmod>2018-05-24T00:00:00+00:00</lastmod>
+    <loc>https://xiaosuiba.github.io/tags/tips/</loc>
+    <lastmod>2018-03-13T18:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>https://xiaosuiba.github.io/tags/tips/</loc>
-    <lastmod>2018-03-13T18:00:00+00:00</lastmod>
+    <loc>https://xiaosuiba.github.io/categories/tips/</loc>
+    <lastmod>2018-05-24T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
