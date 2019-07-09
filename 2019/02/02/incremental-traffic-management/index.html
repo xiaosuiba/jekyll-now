@@ -97,11 +97,7 @@
                     </li>
                     
                     <li>
-                        <a href="/categories/tech">Tech</a>
-                    </li>
-                    
-                    <li>
-                        <a href="/categories/tips">Tips</a>
+                        <a href="/categories/tech">tech</a>
                     </li>
                     
                     
@@ -254,21 +250,11 @@
 
 <p>假设您有 service A 和 service B 两个服务，他们是 Istio 网格的一部分。当 A 想要与 B 通信时，Pod A 的 sidecar 代理负责将流量引导到 service B。例如，如果你希望到 service B v1 版本和 v2 版本之间的流量按 <sup>50</sup>&frasl;<sub>50</sub> 分割，流量将按如下方式流动：</p>
 
-
 <figure>
-    
-        <img src="https://istio.io/blog/2018/incremental-traffic-management/fifty-fifty.png" alt="50/50 流量分割" />
-    
-    
-    <figcaption>
-        <p>
-        50/50 流量分割
-        
-            
-        
-        </p> 
-    </figcaption>
-    
+    <img src="https://istio.io/blog/2018/incremental-traffic-management/fifty-fifty.png"
+         alt="50&amp;frasl;50 流量分割"/> <figcaption>
+            <p><sup>50</sup>&frasl;<sub>50</sub> 流量分割</p>
+        </figcaption>
 </figure>
 
 
@@ -276,21 +262,11 @@
 
 <p>幸运的是，标准的 Istio 部署已经包含了一个 <a href="https://istio.io/zh/docs/concepts/traffic-management/#gateway">Gateway</a>，它专门处理 Istio 网格之外的入口流量。此 Gateway 用于允许通过外部负载均衡器进入的集群外部入口流量；或来自 Kubernetes 集群，但在服务网格之外的入口流量。网关可以进行配置，对没有 Sidecar 支持的入口流量进行代理，引导流量进入相应的 Pod。这种方法允许您利用 Istio 的流量管理功能，其代价是通过入口网关的流量将产生额外的跃点。</p>
 
-
 <figure>
-    
-        <img src="https://istio.io/blog/2018/incremental-traffic-management/fifty-fifty-ingress-gateway.png" alt="使用 Ingress Gateway 的 50/50 流量分割" />
-    
-    
-    <figcaption>
-        <p>
-        使用 Ingress Gateway 的 50/50 流量分割
-        
-            
-        
-        </p> 
-    </figcaption>
-    
+    <img src="https://istio.io/blog/2018/incremental-traffic-management/fifty-fifty-ingress-gateway.png"
+         alt="使用 Ingress Gateway 的 50&amp;frasl;50 流量分割"/> <figcaption>
+            <p>使用 Ingress Gateway 的 <sup>50</sup>&frasl;<sub>50</sub> 流量分割</p>
+        </figcaption>
 </figure>
 
 
@@ -505,8 +481,6 @@ null
                         
                         
                         
-                        
-                        
                     </div>
                 </section>
                 
@@ -652,16 +626,6 @@ null
 
 
 
-
-
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-134623467-1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'UA-134623467-1');
-</script>
 
 
 </body>

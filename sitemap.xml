@@ -3,13 +3,61 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>https://xiaosuiba.github.io/2019/03/07/docker-chinese-official-mirror/</loc>
-    <lastmod>2019-03-07T00:00:00+00:00</lastmod>
+    <loc>https://xiaosuiba.github.io/categories/</loc>
+    <lastmod>2019-07-09T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://xiaosuiba.github.io/</loc>
+    <lastmod>2019-07-09T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://xiaosuiba.github.io/tags/edge/</loc>
+    <lastmod>2019-07-09T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://xiaosuiba.github.io/tags/edgex/</loc>
+    <lastmod>2019-07-09T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://xiaosuiba.github.io/post/</loc>
+    <lastmod>2019-07-09T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://xiaosuiba.github.io/tags/</loc>
+    <lastmod>2019-07-09T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://xiaosuiba.github.io/categories/tech/</loc>
+    <lastmod>2019-07-09T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://xiaosuiba.github.io/2019/07/09/run-edgex-on-k8s/</loc>
+    <lastmod>2019-07-09T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>https://xiaosuiba.github.io/2019/02/02/happy-spring-festival/</loc>
     <lastmod>2019-02-02T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://xiaosuiba.github.io/tags/istio/</loc>
+    <lastmod>2019-02-02T00:00:00+00:00</lastmod>
+    <priority>0</priority>
   </url>
   
   <url>
@@ -24,73 +72,16 @@
   
   <url>
     <loc>https://xiaosuiba.github.io/search/placeholder/</loc>
+    <priority>0</priority>
   </url>
   
   <url>
     <loc>https://xiaosuiba.github.io/top/about/</loc>
-  </url>
-  
-  <url>
-    <loc>https://xiaosuiba.github.io/categories/</loc>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>https://xiaosuiba.github.io/</loc>
-    <lastmod>2019-03-07T00:00:00+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>https://xiaosuiba.github.io/tags/docker/</loc>
-    <lastmod>2019-03-07T00:00:00+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>https://xiaosuiba.github.io/tags/image/</loc>
-    <lastmod>2019-03-07T00:00:00+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>https://xiaosuiba.github.io/tags/istio/</loc>
-    <lastmod>2019-02-02T00:00:00+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>https://xiaosuiba.github.io/tags/mirror/</loc>
-    <lastmod>2019-03-07T00:00:00+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>https://xiaosuiba.github.io/post/</loc>
-    <lastmod>2019-03-07T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://xiaosuiba.github.io/search/</loc>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>https://xiaosuiba.github.io/tags/</loc>
-    <lastmod>2019-03-07T00:00:00+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>https://xiaosuiba.github.io/categories/tech/</loc>
-    <lastmod>2019-02-02T00:00:00+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>https://xiaosuiba.github.io/categories/tips/</loc>
-    <lastmod>2019-03-07T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   

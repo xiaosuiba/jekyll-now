@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-us">
 <head>
-	<meta name="generator" content="Hugo 0.48" /><head>
+	<meta name="generator" content="Hugo 0.55.6" /><head>
     <meta name="google-site-verification" content="9vIieCe-Qpd78QOmBl63rGtIVbhY6sYyuxX3j8XWBA4" />
     <meta name="baidu-site-verification" content="LRrmH41lz7" />
     <meta charset="utf-8">
@@ -98,11 +98,7 @@
                     </li>
                     
                     <li>
-                        <a href="/categories/tech">Tech</a>
-                    </li>
-                    
-                    <li>
-                        <a href="/categories/tips">Tips</a>
+                        <a href="/categories/tech">tech</a>
                     </li>
                     
                     
@@ -184,23 +180,19 @@
             
 
 <div class="post-preview">
-    <a href="https://xiaosuiba.github.io/2019/03/07/docker-chinese-official-mirror/">
+    <a href="https://xiaosuiba.github.io/2019/07/09/run-edgex-on-k8s/">
         <h2 class="post-title">
-            Docker 中国官方镜像加速(转)
+            在 Kubernetes 上运行 Edgex
         </h2>
-	
-        <h3 class="post-subtitle">
-            使用 Docker 中国官方镜像进行加速
-        </h3>
 	
         <div class="post-content-preview">
 	
-            Docker 中国官方镜像加速 转自： https://www.docker-cn.com/registry-mirror 通过 Docker 官方镜像加速，中国区用户能够快速访问最流行的 Docker 镜像。该镜像托管于中国大陆，本地用户现在将会享受到更快的下载速
+            EdgeX 官方目前使用了 docker-compose 进行安装，由于我们底层使用了 kubernetes 对所有的容器进行管理，所以希望将 EdgeX 跑在 Kubernetes。 官方目前的考虑是进一步做微服务的
        
         </div>
     </a>
     <p class="post-meta">
-    Posted by Chris Li Thursday, March 7, 2019
+    Posted by Chris Li Tuesday, July 9, 2019
     </p>
 </div>
 <hr>
@@ -286,8 +278,6 @@
         <h5>FEATURED TAGS</h5>
         <div class="tags">
              
-            
-                
             
                 
             
@@ -495,16 +485,6 @@
 
 
 
-
-
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-134623467-1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'UA-134623467-1');
-</script>
 
 
 </body>

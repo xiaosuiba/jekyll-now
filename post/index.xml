@@ -6,18 +6,18 @@
     <description>Recent content in Posts on ChrisLi&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 07 Mar 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 09 Jul 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://xiaosuiba.github.io/post/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>Docker 中国官方镜像加速(转)</title>
-      <link>https://xiaosuiba.github.io/2019/03/07/docker-chinese-official-mirror/</link>
-      <pubDate>Thu, 07 Mar 2019 00:00:00 +0000</pubDate>
+      <title>在 Kubernetes 上运行 Edgex</title>
+      <link>https://xiaosuiba.github.io/2019/07/09/run-edgex-on-k8s/</link>
+      <pubDate>Tue, 09 Jul 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://xiaosuiba.github.io/2019/03/07/docker-chinese-official-mirror/</guid>
-      <description>Docker 中国官方镜像加速 转自： https://www.docker-cn.com/registry-mirror 通过 Docker 官方镜像加速，中国区用户能够快速访问最流行的 Docker 镜像。该镜像托管于中国大陆，本地用户现在将会享受到更快的下载速</description>
+      <guid>https://xiaosuiba.github.io/2019/07/09/run-edgex-on-k8s/</guid>
+      <description>EdgeX 官方目前使用了 docker-compose 进行安装，由于我们底层使用了 kubernetes 对所有的容器进行管理，所以希望将 EdgeX 跑在 Kubernetes。 官方目前的考虑是进一步做微服务的</description>
     </item>
     
     <item>
