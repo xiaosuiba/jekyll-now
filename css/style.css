@@ -114,6 +114,10 @@ a:visited, a:hover, a:active, a:focus {
   color: black;
 }
 
+article {
+  overflow-y: hidden;
+}
+
 article a {
   text-decoration: underline;
 }
