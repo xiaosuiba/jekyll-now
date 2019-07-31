@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head><head>
+    <meta name="google-site-verification" content="9vIieCe-Qpd78QOmBl63rGtIVbhY6sYyuxX3j8XWBA4" />
+    <meta name="baidu-site-verification" content="LRrmH41lz7" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <meta property="og:site_name" content="ChrisLi&#39;s Blog">
+    <meta property="og:type" content="article">
+
+    
+    <meta property="og:image" content="https://xiaosuiba.github.io/img/home-bg-natsume4.jpg">
+    <meta property="twitter:image" content="https://xiaosuiba.github.io/img/home-bg-natsume4.jpg" />
+    
+
+    
+    <meta name="title" content="[译]如何生成自签名证书" />
+    <meta property="og:title" content="[译]如何生成自签名证书" />
+    <meta property="twitter:title" content="[译]如何生成自签名证书" />
+    
+
+    
+    <meta name="description" content="">
+    <meta property="og:description" content="" />
+    <meta property="twitter:description" content="" />
+    
+
+    
+    <meta property="twitter:card" content="summary" />
+    
+    
+
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>[译]如何生成自签名证书-打雷不怕的博客 | ChrisLi Blog</title>
+
+    <link rel="canonical" href="/2019/07/31/generate-self-signed-certificates/">
+
+    <link rel="stylesheet" href="/css/iDisqus.min.css"/>
+	
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    
+    <link rel="stylesheet" href="/css/syntax.css">
+
+    
+    <link rel="stylesheet" href="/css/zanshang.css">
+
+    
+    <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    
+    
+    <script src="/js/jquery.min.js"></script>
+    
+    
+    <script src="/js/bootstrap.min.js"></script>
+    
+    
+    <script src="/js/hux-blog.min.js"></script>
+	
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1/styles/docco.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+</head>
+</head>
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">ChrisLi&#39;s Blog</a>
+        </div>
+
+        
+        
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+                    
+                    <li>
+                        <a href="/categories/tech">tech</a>
+                    </li>
+                    
+                    
+		    
+                        <li><a href="/top/about/">ABOUT</a></li>
+                    
+
+                    
+		    <li>
+                        <a href="/search">SEARCH <img src="/img/search.png" height="15" style="cursor: pointer;"></a>
+		    </li>
+                    
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+    
+</nav>
+<script>
+    
+    
+    
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        
+            $navbar.className = " ";
+            
+            setTimeout(function(){
+                
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+
+
+<style type="text/css">
+    header.intro-header {
+        background-image: url('/img/home-bg-natsume4.jpg')
+    }
+</style>
+<header class="intro-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/certificate" title="certificate">
+                            certificate
+                        </a>
+                        
+                        <a class="tag" href="/tags/cert" title="cert">
+                            cert
+                        </a>
+                        
+                        <a class="tag" href="/tags/etcd" title="etcd">
+                            etcd
+                        </a>
+                        
+                    </div>
+                    <h1>[译]如何生成自签名证书</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+			Posted by 
+			
+			    Chris Li
+			 
+			on 
+			Wednesday, July 31, 2019
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+<article>
+    <div class="container">
+        <div class="row">
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                
+                <header>
+                    <h2>TOC</h2>
+                </header>
+                <nav id="TableOfContents">
+<ul>
+<li><a href="#生成自签名证书">生成自签名证书</a>
+<ul>
+<li><a href="#下载-cfssl">下载 cfssl</a></li>
+<li><a href="#初始化-ca">初始化 CA</a>
+<ul>
+<li><a href="#在容器-linux-中使用的证书类型">在容器 Linux 中使用的证书类型</a></li>
+<li><a href="#配置-ca-选项">配置 CA 选项</a></li>
+<li><a href="#生成服务端证书">生成服务端证书</a></li>
+<li><a href="#生成同行证书">生成同行证书</a></li>
+<li><a href="#生成客户端证书">生成客户端证书</a></li>
+</ul></li>
+<li><a href="#tldr">TLDR</a>
+<ul>
+<li><a href="#下载二进制">下载二进制</a></li>
+<li><a href="#创建目录保存证书">创建目录保存证书：</a></li>
+<li><a href="#生成-ca-证书">生成 CA 证书</a></li>
+<li><a href="#验证数据">验证数据</a></li>
+<li><a href="#需要知道的事情">需要知道的事情</a></li>
+</ul></li>
+<li><a href="#更多信息">更多信息</a></li>
+</ul></li>
+</ul>
+</nav>
+                
+                
+                
+                <blockquote>
+    <p>作者：coreos</p>
+    
+    <p>翻译：李晶晶</p>
+    
+    <p>原文：<a href="https://coreos.com/os/docs/latest/generate-self-signed-certificates.html">https://coreos.com/os/docs/latest/generate-self-signed-certificates.html</a></p>
+</blockquote>
+                
+                
+
+<h1 id="生成自签名证书">生成自签名证书</h1>
+
+<p>如果您在公共网络上构建容器 linux 集群，推荐您为容器服务启用加密来避免流量探测以及中间人攻击。为了达到这个目的，您需要使用证书颁发机构（CA）、私钥和 CA 签发的证书。让我们一起使用 <a href="https://github.com/cloudflare/cfssl">cfssl</a> 来进行创建这些组件的整个流程。</p>
+
+<p><strong>注意：</strong> 此处我们将进行基本的流程。如果您希望配置高级安全选项，请参考官方 <a href="https://github.com/cloudflare/cfssl">cfssl</a> 文档。</p>
+
+<h2 id="下载-cfssl">下载 cfssl</h2>
+
+<p>CloudFlare 在 github 页面上分发 <a href="https://github.com/cloudflare/cfssl">cfssl</a> 源码，并在 <a href="https://pkg.cfssl.org/">cfssl 网站</a>上分发二进制文件。</p>
+
+<p>本文假设您在本地 x86_64 Linux 主机上运行 <a href="https://github.com/cloudflare/cfssl">cfssl</a>。</p>
+
+<pre><code>mkdir ~/bin
+curl -s -L -o ~/bin/cfssl https://pkg.cfssl.org/R1.2/cfssl_linux-amd64
+curl -s -L -o ~/bin/cfssljson https://pkg.cfssl.org/R1.2/cfssljson_linux-amd64
+chmod +x ~/bin/{cfssl,cfssljson}
+export PATH=$PATH:~/bin
+</code></pre>
+
+<h2 id="初始化-ca">初始化 CA</h2>
+
+<p>首先，我们需要保存默认 <code>cfssl</code> 选项，用于以后做替换：</p>
+
+<pre><code>mkdir ~/cfssl
+cd ~/cfssl
+cfssl print-defaults config &gt; ca-config.json
+cfssl print-defaults csr &gt; ca-csr.json
+</code></pre>
+
+<h3 id="在容器-linux-中使用的证书类型">在容器 Linux 中使用的证书类型</h3>
+
+<ul>
+<li><strong>客户端证书（client certificate）</strong> 用于从服务器验证客户端。例如 <code>etcdctl</code>、<code>etcd proxy</code> 或者 <code>docker</code> 客户端。</li>
+<li><strong>服务端证书（server certificate）</strong> 用于服务器，客户端会通过它验证服务器的身份。例如 <code>docker</code> 服务器或者 <code>kube-apiserver</code>。</li>
+<li><strong>同行证书（peer certificate）</strong> 用于 etcd 集群成员彼此之间进行双向通信。</li>
+</ul>
+
+<h3 id="配置-ca-选项">配置 CA 选项</h3>
+
+<p>现在我们可以配置 <code>ca-config.json</code> 文件中的签名选项了。默认选项包含了以下预先配置的字段：</p>
+
+<ul>
+<li>profiles：使用 X509 V3 扩展的 <code>server auth</code>（TLS Web Server Authentication） 默认值为 <strong>www</strong>，<code>client auth</code>(TLS Web Client Authentication) 默认值为 <strong>client</strong>。</li>
+<li>expiry：默认值为 <code>8760h</code>（也即 365 天）。</li>
+</ul>
+
+<p>规范起见，我们将 <strong>www</strong> 重命名为 <strong>server</strong>，创建同时使用 <code>server auth</code> 和 <code>client auth</code> 扩展的 <strong>peer</strong> 配置，并设置 expiry 为 43800h（5 年）：</p>
+
+<pre><code>{
+    &quot;signing&quot;: {
+        &quot;default&quot;: {
+            &quot;expiry&quot;: &quot;43800h&quot;
+        },
+        &quot;profiles&quot;: {
+            &quot;server&quot;: {
+                &quot;expiry&quot;: &quot;43800h&quot;,
+                &quot;usages&quot;: [
+                    &quot;signing&quot;,
+                    &quot;key encipherment&quot;,
+                    &quot;server auth&quot;
+                ]
+            },
+            &quot;client&quot;: {
+                &quot;expiry&quot;: &quot;43800h&quot;,
+                &quot;usages&quot;: [
+                    &quot;signing&quot;,
+                    &quot;key encipherment&quot;,
+                    &quot;client auth&quot;
+                ]
+            },
+            &quot;peer&quot;: {
+                &quot;expiry&quot;: &quot;43800h&quot;,
+                &quot;usages&quot;: [
+                    &quot;signing&quot;,
+                    &quot;key encipherment&quot;,
+                    &quot;server auth&quot;,
+                    &quot;client auth&quot;
+                ]
+            }
+        }
+    }
+}
+</code></pre>
+
+<pre><code>{
+    &quot;CN&quot;: &quot;My own CA&quot;,
+    &quot;key&quot;: {
+        &quot;algo&quot;: &quot;rsa&quot;,
+        &quot;size&quot;: 2048
+    },
+    &quot;names&quot;: [
+        {
+            &quot;C&quot;: &quot;US&quot;,
+            &quot;L&quot;: &quot;CA&quot;,
+            &quot;O&quot;: &quot;My Company Name&quot;,
+            &quot;ST&quot;: &quot;San Francisco&quot;,
+            &quot;OU&quot;: &quot;Org Unit 1&quot;,
+            &quot;OU&quot;: &quot;Org Unit 2&quot;
+        }
+    ]
+}
+</code></pre>
+
+<p>然后使用配置的选项生成 CA：</p>
+
+<pre><code>cfssl gencert -initca ca-csr.json | cfssljson -bare ca -
+</code></pre>
+
+<p>您将得到以下文件：</p>
+
+<pre><code>ca-key.pem
+ca.csr
+ca.pem
+</code></pre>
+
+<ul>
+<li>请你妥善保管 <code>ca-key.pem</code> 文件。这个密钥允许在您的 CA 内生成任意类型的证书。</li>
+<li>*<strong>.csr</strong> 在我们的示例中没有使用。</li>
+</ul>
+
+<h3 id="生成服务端证书">生成服务端证书</h3>
+
+<pre><code>cfssl print-defaults csr &gt; server.json
+</code></pre>
+
+<p>服务端证书最重要的值是 <strong>Common Name (CN)</strong> 和 <strong>hosts</strong>。我们需要替换他们，例如：</p>
+
+<pre><code>...
+    &quot;CN&quot;: &quot;coreos1&quot;,
+    &quot;hosts&quot;: [
+        &quot;192.168.122.68&quot;,
+        &quot;ext.example.com&quot;,
+        &quot;coreos1.local&quot;,
+        &quot;coreos1&quot;
+    ],
+...
+</code></pre>
+
+<p>现在我们已经准备生成服务端证书和密钥：</p>
+
+<pre><code>cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=server server.json | cfssljson -bare server
+</code></pre>
+
+<p>或者不使用 CSR json 文件：</p>
+
+<pre><code>echo '{&quot;CN&quot;:&quot;coreos1&quot;,&quot;hosts&quot;:[&quot;&quot;],&quot;key&quot;:{&quot;algo&quot;:&quot;rsa&quot;,&quot;size&quot;:2048}}' | cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=server -hostname=&quot;192.168.122.68,ext.example.com,coreos1.local,coreos1&quot; - | cfssljson -bare server
+</code></pre>
+
+<p>您将得到以下文件：</p>
+
+<pre><code>server-key.pem
+server.csr
+server.pem
+</code></pre>
+
+<h3 id="生成同行证书">生成同行证书</h3>
+
+<pre><code>cfssl print-defaults csr &gt; member1.json
+</code></pre>
+
+<p>替换 CN 和 hosts 值，例如：</p>
+
+<pre><code>...
+    &quot;CN&quot;: &quot;member1&quot;,
+    &quot;hosts&quot;: [
+        &quot;192.168.122.101&quot;,
+        &quot;ext.example.com&quot;,
+        &quot;member1.local&quot;,
+        &quot;member1&quot;
+    ],
+...
+</code></pre>
+
+<p>现在我们准备生成 member1 证书和密钥：</p>
+
+<pre><code>cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=peer member1.json | cfssljson -bare member1
+</code></pre>
+
+<p>或者不使用 CSR json 文件：</p>
+
+<pre><code>echo '{&quot;CN&quot;:&quot;member1&quot;,&quot;hosts&quot;:[&quot;&quot;],&quot;key&quot;:{&quot;algo&quot;:&quot;rsa&quot;,&quot;size&quot;:2048}}' | cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=peer -hostname=&quot;192.168.122.101,ext.example.com,member1.local,member1&quot; - | cfssljson -bare member1
+</code></pre>
+
+<p>您将的得到以下文件：</p>
+
+<pre><code>member1-key.pem
+member1.csr
+member1.pem
+</code></pre>
+
+<p>为每个 <code>etcd</code> 成员的 hostname 重复这些步骤。</p>
+
+<h3 id="生成客户端证书">生成客户端证书</h3>
+
+<pre><code>cfssl print-defaults csr &gt; client.json
+</code></pre>
+
+<p>对于客户端证书，我们可以忽略 <strong>hosts</strong> 值，仅仅设置将 <strong>Common Name (CN)</strong> 值设置为 <strong>client</strong>：</p>
+
+<pre><code>...
+    &quot;CN&quot;: &quot;client&quot;,
+    &quot;hosts&quot;: [&quot;&quot;],
+...
+</code></pre>
+
+<p>生成客户端证书</p>
+
+<pre><code>cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=client client.json | cfssljson -bare client
+</code></pre>
+
+<p>或者不使用 CSR json 文件：</p>
+
+<pre><code>echo '{&quot;CN&quot;:&quot;client&quot;,&quot;hosts&quot;:[&quot;&quot;],&quot;key&quot;:{&quot;algo&quot;:&quot;rsa&quot;,&quot;size&quot;:2048}}' | cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=client - | cfssljson -bare client
+</code></pre>
+
+<p>您将得到以下文件：</p>
+
+<pre><code>client-key.pem
+client.csr
+client.pem
+</code></pre>
+
+<h2 id="tldr">TLDR</h2>
+
+<h3 id="下载二进制">下载二进制</h3>
+
+<pre><code>mkdir ~/bin
+curl -s -L -o ~/bin/cfssl https://pkg.cfssl.org/R1.2/cfssl_linux-amd64
+curl -s -L -o ~/bin/cfssljson https://pkg.cfssl.org/R1.2/cfssljson_linux-amd64
+chmod +x ~/bin/{cfssl,cfssljson}
+export PATH=$PATH:~/bin
+</code></pre>
+
+<h3 id="创建目录保存证书">创建目录保存证书：</h3>
+
+<pre><code>mkdir ~/cfssl
+cd ~/cfssl
+</code></pre>
+
+<h3 id="生成-ca-证书">生成 CA 证书</h3>
+
+<pre><code>echo '{&quot;CN&quot;:&quot;CA&quot;,&quot;key&quot;:{&quot;algo&quot;:&quot;rsa&quot;,&quot;size&quot;:2048}}' | cfssl gencert -initca - | cfssljson -bare ca -
+echo '{&quot;signing&quot;:{&quot;default&quot;:{&quot;expiry&quot;:&quot;43800h&quot;,&quot;usages&quot;:[&quot;signing&quot;,&quot;key encipherment&quot;,&quot;server auth&quot;,&quot;client auth&quot;]}}}' &gt; ca-config.json
+export ADDRESS=192.168.122.68,ext1.example.com,coreos1.local,coreos1
+export NAME=server
+echo '{&quot;CN&quot;:&quot;'$NAME'&quot;,&quot;hosts&quot;:[&quot;&quot;],&quot;key&quot;:{&quot;algo&quot;:&quot;rsa&quot;,&quot;size&quot;:2048}}' | cfssl gencert -config=ca-config.json -ca=ca.pem -ca-key=ca-key.pem -hostname=&quot;$ADDRESS&quot; - | cfssljson -bare $NAME
+export ADDRESS=
+export NAME=client
+echo '{&quot;CN&quot;:&quot;'$NAME'&quot;,&quot;hosts&quot;:[&quot;&quot;],&quot;key&quot;:{&quot;algo&quot;:&quot;rsa&quot;,&quot;size&quot;:2048}}' | cfssl gencert -config=ca-config.json -ca=ca.pem -ca-key=ca-key.pem -hostname=&quot;$ADDRESS&quot; - | cfssljson -bare $NAME
+</code></pre>
+
+<h3 id="验证数据">验证数据</h3>
+
+<pre><code>openssl x509 -in ca.pem -text -noout
+openssl x509 -in server.pem -text -noout
+openssl x509 -in client.pem -text -noout
+</code></pre>
+
+<h3 id="需要知道的事情">需要知道的事情</h3>
+
+<ul>
+<li>不要将您的 <code>ca-key.pem</code> 放到容器 Linux 配置中，推荐将其保存在安全的位置。这个密钥允许创建任意数量的证书。</li>
+<li>妥善保管 <strong>key</strong> 文件。不要忘记设置合适的文件权限，例如 <code>chmod 0600 server-key.pem</code>。</li>
+<li>在这个 <strong>TLDR</strong> 示例中包含了使用 X509 V3 扩展的 <code>server auth</code> 和 <code>client auth</code> 证书，您可以将他们用于服务端与客户端认证。</li>
+<li>您也可以为通配符 <code>*</code> 地址生成密钥和证书。这些证书可以在任意机器上运行。这简化了证书创建但增加了安全风险。</li>
+</ul>
+
+<h2 id="更多信息">更多信息</h2>
+
+<p>更多示例请查看这些文档：
+<a href="https://coreos.com/os/docs/latest/adding-certificate-authorities.html">自定义CA</a> <a href="https://coreos.com/etcd/docs/latest/op-guide/security.html">etcd 安全模型</a></p>
+
+
+                
+
+                <hr>
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2019/07/09/run-edgex-on-k8s/" data-toggle="tooltip" data-placement="top" title="在 Kubernetes 上运行 Edgex">&larr;
+                            Previous Post</a>
+                    </li>
+                    
+                    
+                </ul>
+
+                
+<div id="disqus-comment"></div>
+
+
+
+            </div>
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                    </div>
+                </section>
+                
+
+                
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                   
+                   <li>
+                       <a href="" rel="alternate" type="application/rss+xml" title="ChrisLi&#39;s Blog" >
+                           <span class="fa-stack fa-lg">
+                               <i class="fa fa-circle fa-stack-2x"></i>
+                               <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+                           </span>
+                       </a>
+                   </li>
+                   
+                    
+                    <li>
+                        <a href="mailto:xiaosuiba@gmail.com">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		    
+                    
+                    
+                    
+                    
+
+                    
+
+		    
+                    
+                    <li>
+                        <a target="_blank" href="/your%20wechat%20qr%20code%20image">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-wechat fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		    
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/xiaosuiba">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		    
+                    
+                    
+                </ul>
+		<p class="copyright text-muted">
+                    Copyright &copy; ChrisLi&#39;s Blog , 2019
+                    <br>
+                    <a href="https://themes.gohugo.io/hugo-theme-cleanwhite">CleanWhite Hugo Theme</a> by <a href="https://zhaohuabing.com">Huabing</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="100px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=zhaohuabing&repo=hugo-theme-cleanwhite&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+
+
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+
+
+
+
+
+<script>
+    
+    if($('#tag_cloud').length !== 0){
+        async("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+
+<script>
+    async("https://cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<script>
+    (function(){
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https'){
+       bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+      }
+      else{
+      bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+
+
+
+
+
+
+</body>
+</html>
