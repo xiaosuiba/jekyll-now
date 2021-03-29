@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Posts on ChrisLi&#39;s Blog</title>
@@ -6,27 +6,24 @@
     <description>Recent content in Posts on ChrisLi&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 31 Jul 2019 00:00:00 +0000</lastBuildDate>
-    
-	<atom:link href="https://xiaosuiba.github.io/post/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Mon, 29 Mar 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://xiaosuiba.github.io/post/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>[译]如何生成自签名证书</title>
-      <link>https://xiaosuiba.github.io/2019/07/31/generate-self-signed-certificates/</link>
-      <pubDate>Wed, 31 Jul 2019 00:00:00 +0000</pubDate>
+      <title>Why rest.Storage interface have only one method</title>
+      <link>https://xiaosuiba.github.io/2021/03/26/why-only-new-in-rest-storage-interface/</link>
+      <pubDate>Mon, 29 Mar 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://xiaosuiba.github.io/2019/07/31/generate-self-signed-certificates/</guid>
-      <description>生成自签名证书 如果您在公共网络上构建容器 linux 集群，推荐您为容器服务启用加密来避免流量探测以及中间人攻击。为了达到这个目的，您需要使用证书颁发机</description>
+      <guid>https://xiaosuiba.github.io/2021/03/26/why-only-new-in-rest-storage-interface/</guid>
+      <description>Why rest.Storage interface have only one method While reading Kubernetes source code, I found one question really bothered me for several days. The common interface of rest storage is defined in /vendor/k8s.io/apiserver/pkg/registry/rest/rest.go:
+type Storage interface { // New returns an empty object that can be used with Create and Update after request data has been put into it. 	// This object must be a pointer type for use with Codec.</description>
     </item>
     
     <item>
-      <title>在 Kubernetes 上运行 Edgex</title>
-      <link>https://xiaosuiba.github.io/2019/07/09/run-edgex-on-k8s/</link>
-      <pubDate>Tue, 09 Jul 2019 00:00:00 +0000</pubDate>
+      <title>Kubernetes sample-apiserver 代码阅读</title>
+      <link>https://xiaosuiba.github.io/2021/03/26/kubernetes-sample-apiserver/</link>
+      <pubDate>Fri, 26 Mar 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://xiaosuiba.github.io/2019/07/09/run-edgex-on-k8s/</guid>
-      <description>EdgeX 官方目前使用了 docker-compose 进行安装，由于我们底层使用了 kubernetes 对所有的容器进行管理，所以希望将 EdgeX 跑在 Kubernetes。 官方目前的考虑是进一步做微服务的</description>
+      <guid>https://xiaosuiba.github.io/2021/03/26/kubernetes-sample-apiserver/</guid>
+      <description>启动过程 main.go: func main() { logs.InitLogs() defer logs.FlushLogs() stopCh := genericapiserver.SetupSignalHandler() options := server.NewWardleServerOptions(os.Stdout, os.Stderr) cmd := server.NewCommandStartWardleServer(options, stopCh) cmd.Flags().AddGoFlagSet(flag.CommandLine) if err := cmd.Execute(); err != nil { klog.Fatal(err) } } options 调用 server.NewWardleServerOption 构建了一个 WardleServerOptions 配置对象 type WardleServerOptions struct { RecommendedOptions *genericoptions.RecommendedOptions SharedInformerFactory informers.SharedInformerFactory StdOut io.Writer StdErr io.Writer } RecommendedOptions 的解释为： // RecommendedOptions contains</description>
     </item>
     
     <item>
@@ -44,17 +41,8 @@
       <pubDate>Sat, 02 Feb 2019 00:00:00 +0000</pubDate>
       
       <guid>https://xiaosuiba.github.io/2019/02/02/hello-world/</guid>
-      <description>  “Yeah It&amp;rsquo;s on. ”
+      <description> “Yeah It&amp;rsquo;s on. ”
  Hello World! </description>
-    </item>
-    
-    <item>
-      <title>增量式应用 Istio 第一部分，流量管理(译文)</title>
-      <link>https://xiaosuiba.github.io/2019/02/02/incremental-traffic-management/</link>
-      <pubDate>Sat, 02 Feb 2019 00:00:00 +0000</pubDate>
-      
-      <guid>https://xiaosuiba.github.io/2019/02/02/incremental-traffic-management/</guid>
-      <description>流量管理是 Istio 提供的重要优势之一。Istio 流量管理的核心是在将通信流量和基础设施的伸缩进行解耦。如果没有 Istio 这样的服务网格，这种流量控制方式是</description>
     </item>
     
   </channel>

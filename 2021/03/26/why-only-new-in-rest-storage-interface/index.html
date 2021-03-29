@@ -18,9 +18,9 @@
     
 
     
-    <meta name="title" content="" />
-    <meta property="og:title" content="" />
-    <meta property="twitter:title" content="" />
+    <meta name="title" content="Why rest.Storage interface have only one method" />
+    <meta property="og:title" content="Why rest.Storage interface have only one method" />
+    <meta property="twitter:title" content="Why rest.Storage interface have only one method" />
     
 
     
@@ -37,9 +37,9 @@
     <meta name="keyword"  content="">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>打雷不怕的博客 | ChrisLi Blog</title>
+    <title>Why rest.Storage interface have only one method-打雷不怕的博客 | ChrisLi Blog</title>
 
-    <link rel="canonical" href="/top/about/">
+    <link rel="canonical" href="/2021/03/26/why-only-new-in-rest-storage-interface/">
 
     <link rel="stylesheet" href="/css/iDisqus.min.css"/>
 	
@@ -148,14 +148,39 @@
 
 
 
-<header class="intro-header" style="background-image: url('/img/home-bg-natsume4.jpg')">
+
+<style type="text/css">
+    header.intro-header {
+        background-image: url('/img/home-bg-natsume4.jpg')
+    }
+</style>
+<header class="intro-header">
     <div class="container">
         <div class="row">
-            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 ">
-                <div class="site-heading">
-                    <h1>ChrisLi&#39;s Blog </h1>
-                    
-		    <span class="subheading">Never stop when you are tired, Stop when you are DONE!</span>
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/kubernetes" title="kubernetes">
+                            kubernetes
+                        </a>
+                        
+                        <a class="tag" href="/tags/code" title="code">
+                            code
+                        </a>
+                        
+                    </div>
+                    <h1>Why rest.Storage interface have only one method</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+			Posted by 
+			
+			    Chris Li
+			 
+			on 
+			Monday, March 29, 2021
+                        
+                    </span>
                 </div>
             </div>
         </div>
@@ -175,16 +200,50 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-         	<h2 id="bio">Bio</h2>
-<p><strong>Chris Li(Li Jingjing)</strong> is a senior software developer engaged in cloud computing territory.
-He&rsquo;s currently working as a pre-research engineer mainly focusing on cloud native related technologies, including kubernetes, istio, etc. He&rsquo;s also an open source advocate who joined several opensouce communities and make contributions to <code>kubernetes.io</code> and <code>istio.io</code>.</p>
-<p>In his spare time, he loves music, anime and playing badminton.
-He has a beatiful wife and a cute boy.</p>
-<h2 id="contact">Contact</h2>
-<ul>
-<li>Email: <a href="mailto:xiaosuiba@gmail.com">xiaosuiba@gmail.com</a></li>
-<li>Twitter: <a href="https://twitter.com/xiaosuiba">xiaosuiba</a></li>
-</ul>
+                
+                
+                
+                
+                <h1 id="why-reststorage-interface-have-only-one-method">Why rest.Storage interface have only one method</h1>
+<p>While reading Kubernetes source code, I found one question really bothered me for several days. The common interface of rest storage is defined in <code>/vendor/k8s.io/apiserver/pkg/registry/rest/rest.go</code>:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-golang" data-lang="golang"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Storage</span> <span style="color:#66d9ef">interface</span> {
+	<span style="color:#75715e">// New returns an empty object that can be used with Create and Update after request data has been put into it.
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">// This object must be a pointer type for use with Codec.DecodeInto([]byte, runtime.Object)
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">New</span>() <span style="color:#a6e22e">runtime</span>.<span style="color:#a6e22e">Object</span>
+}
+</code></pre></div><p>You can see there&rsquo;s only one method <code>New</code> defined here. So how could the other actions, like <code>Get</code> or <code>List</code> etc., be completed?</p>
+<p>After several day&rsquo;s search on the internet, I finally found the some code in <code>/vendor/k8s.io/apiserver/pkg/endpoints/installer.go</code>:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-golang" data-lang="golang"><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">a</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">APIInstaller</span>) <span style="color:#a6e22e">registerResourceHandlers</span>(<span style="color:#a6e22e">path</span> <span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">storage</span> <span style="color:#a6e22e">rest</span>.<span style="color:#a6e22e">Storage</span>, <span style="color:#a6e22e">ws</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">restful</span>.<span style="color:#a6e22e">WebService</span>) (<span style="color:#f92672">*</span><span style="color:#a6e22e">metav1</span>.<span style="color:#a6e22e">APIResource</span>, <span style="color:#f92672">*</span><span style="color:#a6e22e">storageversion</span>.<span style="color:#a6e22e">ResourceInfo</span>, <span style="color:#66d9ef">error</span>) {
+<span style="color:#f92672">...</span>..
+	<span style="color:#75715e">// what verbs are supported by the storage, used to know what verbs we support per path
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">creater</span>, <span style="color:#a6e22e">isCreater</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">storage</span>.(<span style="color:#a6e22e">rest</span>.<span style="color:#a6e22e">Creater</span>)
+	<span style="color:#a6e22e">namedCreater</span>, <span style="color:#a6e22e">isNamedCreater</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">storage</span>.(<span style="color:#a6e22e">rest</span>.<span style="color:#a6e22e">NamedCreater</span>)
+	<span style="color:#a6e22e">lister</span>, <span style="color:#a6e22e">isLister</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">storage</span>.(<span style="color:#a6e22e">rest</span>.<span style="color:#a6e22e">Lister</span>)
+	<span style="color:#a6e22e">getter</span>, <span style="color:#a6e22e">isGetter</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">storage</span>.(<span style="color:#a6e22e">rest</span>.<span style="color:#a6e22e">Getter</span>)
+	<span style="color:#a6e22e">getterWithOptions</span>, <span style="color:#a6e22e">isGetterWithOptions</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">storage</span>.(<span style="color:#a6e22e">rest</span>.<span style="color:#a6e22e">GetterWithOptions</span>)
+	<span style="color:#a6e22e">gracefulDeleter</span>, <span style="color:#a6e22e">isGracefulDeleter</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">storage</span>.(<span style="color:#a6e22e">rest</span>.<span style="color:#a6e22e">GracefulDeleter</span>)
+	<span style="color:#a6e22e">collectionDeleter</span>, <span style="color:#a6e22e">isCollectionDeleter</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">storage</span>.(<span style="color:#a6e22e">rest</span>.<span style="color:#a6e22e">CollectionDeleter</span>)
+	<span style="color:#a6e22e">updater</span>, <span style="color:#a6e22e">isUpdater</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">storage</span>.(<span style="color:#a6e22e">rest</span>.<span style="color:#a6e22e">Updater</span>)
+	<span style="color:#a6e22e">patcher</span>, <span style="color:#a6e22e">isPatcher</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">storage</span>.(<span style="color:#a6e22e">rest</span>.<span style="color:#a6e22e">Patcher</span>)
+	<span style="color:#a6e22e">watcher</span>, <span style="color:#a6e22e">isWatcher</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">storage</span>.(<span style="color:#a6e22e">rest</span>.<span style="color:#a6e22e">Watcher</span>)
+	<span style="color:#a6e22e">connecter</span>, <span style="color:#a6e22e">isConnecter</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">storage</span>.(<span style="color:#a6e22e">rest</span>.<span style="color:#a6e22e">Connecter</span>)
+	<span style="color:#a6e22e">storageMeta</span>, <span style="color:#a6e22e">isMetadata</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">storage</span>.(<span style="color:#a6e22e">rest</span>.<span style="color:#a6e22e">StorageMetadata</span>)
+	<span style="color:#a6e22e">storageVersionProvider</span>, <span style="color:#a6e22e">isStorageVersionProvider</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">storage</span>.(<span style="color:#a6e22e">rest</span>.<span style="color:#a6e22e">StorageVersionProvider</span>)
+</code></pre></div><p>see here, <code>registerResourceHandlers</code> utilizes golang type conversion to check the storage&rsquo;s abilities. So the <code>New</code> method is only a sign of rest.storage interface. The real abilities could be defined in resource storage struct as needed. The methods defined in each specific resource storage type represents its ability in the same time.</p>
+
+
+                
+
+                <hr>
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2021/03/26/kubernetes-sample-apiserver/" data-toggle="tooltip" data-placement="top" title="Kubernetes sample-apiserver 代码阅读">&larr;
+                            Previous Post</a>
+                    </li>
+                    
+                    
+                </ul>
 
                 
 <div id="disqus-comment"></div>
@@ -208,13 +267,13 @@ He has a beatiful wife and a cute boy.</p>
                         
                         
                         <a href="/tags/code" title="code">
-                        code
+                            code
                         </a>
                         
                         
                         
                         <a href="/tags/kubernetes" title="kubernetes">
-                        kubernetes
+                            kubernetes
                         </a>
                         
                         
@@ -289,7 +348,7 @@ He has a beatiful wife and a cute boy.</p>
                     
                 </ul>
 		<p class="copyright text-muted">
-                    Copyright &copy; ChrisLi&#39;s Blog , 0001
+                    Copyright &copy; ChrisLi&#39;s Blog , 2021
                     <br>
                     <a href="https://themes.gohugo.io/hugo-theme-cleanwhite">CleanWhite Hugo Theme</a> by <a href="https://zhaohuabing.com">Huabing</a> |
                     <iframe

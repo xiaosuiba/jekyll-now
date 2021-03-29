@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-us">
 <head>
-	<meta name="generator" content="Hugo 0.55.6" /><head>
+	<meta name="generator" content="Hugo 0.82.0" /><head>
     <meta name="google-site-verification" content="9vIieCe-Qpd78QOmBl63rGtIVbhY6sYyuxX3j8XWBA4" />
     <meta name="baidu-site-verification" content="LRrmH41lz7" />
     <meta charset="utf-8">
@@ -180,37 +180,38 @@
             
 
 <div class="post-preview">
-    <a href="https://xiaosuiba.github.io/2019/07/31/generate-self-signed-certificates/">
+    <a href="https://xiaosuiba.github.io/2021/03/26/why-only-new-in-rest-storage-interface/">
         <h2 class="post-title">
-            [译]如何生成自签名证书
+            Why rest.Storage interface have only one method
         </h2>
 	
         <div class="post-content-preview">
 	
-            生成自签名证书 如果您在公共网络上构建容器 linux 集群，推荐您为容器服务启用加密来避免流量探测以及中间人攻击。为了达到这个目的，您需要使用证书颁发机
+            Why rest.Storage interface have only one method While reading Kubernetes source code, I found one question really bothered me for several days. The common interface of rest storage is defined in /vendor/k8s.io/apiserver/pkg/registry/rest/rest.go:
+type Storage interface { // New returns an empty object that can be used with Create and Update after request data has been put into it. 	// This object must be a pointer type for use with Codec.
        
         </div>
     </a>
     <p class="post-meta">
-    Posted by Chris Li Wednesday, July 31, 2019
+    Posted by Chris Li Monday, March 29, 2021
     </p>
 </div>
 <hr>
 
 <div class="post-preview">
-    <a href="https://xiaosuiba.github.io/2019/07/09/run-edgex-on-k8s/">
+    <a href="https://xiaosuiba.github.io/2021/03/26/kubernetes-sample-apiserver/">
         <h2 class="post-title">
-            在 Kubernetes 上运行 Edgex
+            Kubernetes sample-apiserver 代码阅读
         </h2>
 	
         <div class="post-content-preview">
 	
-            EdgeX 官方目前使用了 docker-compose 进行安装，由于我们底层使用了 kubernetes 对所有的容器进行管理，所以希望将 EdgeX 跑在 Kubernetes。 官方目前的考虑是进一步做微服务的
+            启动过程 main.go: func main() { logs.InitLogs() defer logs.FlushLogs() stopCh := genericapiserver.SetupSignalHandler() options := server.NewWardleServerOptions(os.Stdout, os.Stderr) cmd := server.NewCommandStartWardleServer(options, stopCh) cmd.Flags().AddGoFlagSet(flag.CommandLine) if err := cmd.Execute(); err != nil { klog.Fatal(err) } } options 调用 server.NewWardleServerOption 构建了一个 WardleServerOptions 配置对象 type WardleServerOptions struct { RecommendedOptions *genericoptions.RecommendedOptions SharedInformerFactory informers.SharedInformerFactory StdOut io.Writer StdErr io.Writer } RecommendedOptions 的解释为： // RecommendedOptions contains
        
         </div>
     </a>
     <p class="post-meta">
-    Posted by Chris Li Tuesday, July 9, 2019
+    Posted by Chris Li Friday, March 26, 2021
     </p>
 </div>
 <hr>
@@ -245,26 +246,8 @@
 	
         <div class="post-content-preview">
 	
-              “Yeah It&rsquo;s on. ”
+             “Yeah It&rsquo;s on. ”
  Hello World! 
-       
-        </div>
-    </a>
-    <p class="post-meta">
-    Posted by Chris Li Saturday, February 2, 2019
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="https://xiaosuiba.github.io/2019/02/02/incremental-traffic-management/">
-        <h2 class="post-title">
-            增量式应用 Istio 第一部分，流量管理(译文)
-        </h2>
-	
-        <div class="post-content-preview">
-	
-            流量管理是 Istio 提供的重要优势之一。Istio 流量管理的核心是在将通信流量和基础设施的伸缩进行解耦。如果没有 Istio 这样的服务网格，这种流量控制方式是
        
         </div>
     </a>
@@ -298,15 +281,15 @@
              
             
                 
-            
+                    <a href="/tags/code" title="code">
+                        code
+                    </a>
                 
             
                 
-            
-                
-            
-                
-            
+                    <a href="/tags/kubernetes" title="kubernetes">
+                        kubernetes
+                    </a>
                 
             
         </div>
@@ -435,7 +418,7 @@
                     
                 </ul>
 		<p class="copyright text-muted">
-                    Copyright &copy; ChrisLi&#39;s Blog , 2019
+                    Copyright &copy; ChrisLi&#39;s Blog , 2021
                     <br>
                     <a href="https://themes.gohugo.io/hugo-theme-cleanwhite">CleanWhite Hugo Theme</a> by <a href="https://zhaohuabing.com">Huabing</a> |
                     <iframe
