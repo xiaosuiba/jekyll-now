@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en-us">
-<head>
-	<meta name="generator" content="Hugo 0.82.0" /><head>
+<head><head>
     <meta name="google-site-verification" content="9vIieCe-Qpd78QOmBl63rGtIVbhY6sYyuxX3j8XWBA4" />
     <meta name="baidu-site-verification" content="LRrmH41lz7" />
     <meta charset="utf-8">
@@ -19,9 +18,9 @@
     
 
     
-    <meta name="title" content="" />
-    <meta property="og:title" content="" />
-    <meta property="twitter:title" content="" />
+    <meta name="title" content="TKEStack组件不能访问registry域名问题" />
+    <meta property="og:title" content="TKEStack组件不能访问registry域名问题" />
+    <meta property="twitter:title" content="TKEStack组件不能访问registry域名问题" />
     
 
     
@@ -38,9 +37,9 @@
     <meta name="keyword"  content="">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>ChrisLi&#39;s Blog-打雷不怕的博客 | ChrisLi Blog</title>
+    <title>TKEStack组件不能访问registry域名问题-打雷不怕的博客 | ChrisLi Blog</title>
 
-    <link rel="canonical" href="/">
+    <link rel="canonical" href="/2021/03/31/tkestack-registry-dns-issue/">
 
     <link rel="stylesheet" href="/css/iDisqus.min.css"/>
 	
@@ -149,14 +148,39 @@
 
 
 
-<header class="intro-header" style="background-image: url('/img/home-bg-natsume4.jpg')">
+
+<style type="text/css">
+    header.intro-header {
+        background-image: url('/img/home-bg-natsume4.jpg')
+    }
+</style>
+<header class="intro-header">
     <div class="container">
         <div class="row">
-            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 ">
-                <div class="site-heading">
-                    <h1>ChrisLi&#39;s Blog </h1>
-                    
-		    <span class="subheading">Never stop when you are tired, Stop when you are DONE!</span>
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/kubernetes" title="kubernetes">
+                            kubernetes
+                        </a>
+                        
+                        <a class="tag" href="/tags/code" title="code">
+                            code
+                        </a>
+                        
+                    </div>
+                    <h1>TKEStack组件不能访问registry域名问题</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+			Posted by 
+			
+			    Chris Li
+			 
+			on 
+			Wednesday, March 31, 2021
+                        
+                    </span>
                 </div>
             </div>
         </div>
@@ -165,216 +189,89 @@
 
 
 
-  
-<div class="container">
-    <div class="row">
-        
-        
-   	    <div class="
-            col-lg-8 col-lg-offset-1
-            col-md-8 col-md-offset-1
-            col-sm-12
-            col-xs-12
-            post-container
-        ">
-            
 
-<div class="post-preview">
-    <a href="https://xiaosuiba.github.io/2021/03/31/tkestack-registry-dns-issue/">
-        <h2 class="post-title">
-            TKEStack组件不能访问registry域名问题
-        </h2>
-	
-        <div class="post-content-preview">
-	
-            TKEStack需要配置registry域名，默认为default.registry.tke.com，application组件将使用该域名
-       
-        </div>
-    </a>
-    <p class="post-meta">
-    Posted by Chris Li Wednesday, March 31, 2021
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="https://xiaosuiba.github.io/2021/03/26/why-only-new-in-rest-storage-interface/">
-        <h2 class="post-title">
-            Why rest.Storage interface have only one method
-        </h2>
-	
-        <div class="post-content-preview">
-	
-            Why rest.Storage interface have only one method While reading Kubernetes source code, I found one question really bothered me for several days. The common interface of rest storage is defined in /vendor/k8s.io/apiserver/pkg/registry/rest/rest.go:
-type Storage interface { // New returns an empty object that can be used with Create and Update after request data has been put into it. 	// This object must be a pointer type for use with Codec.
-       
-        </div>
-    </a>
-    <p class="post-meta">
-    Posted by Chris Li Monday, March 29, 2021
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="https://xiaosuiba.github.io/2021/03/26/kubernetes-sample-apiserver/">
-        <h2 class="post-title">
-            Kubernetes sample-apiserver 代码阅读
-        </h2>
-	
-        <div class="post-content-preview">
-	
-            启动过程 main.go: func main() { logs.InitLogs() defer logs.FlushLogs() stopCh := genericapiserver.SetupSignalHandler() options := server.NewWardleServerOptions(os.Stdout, os.Stderr) cmd := server.NewCommandStartWardleServer(options, stopCh) cmd.Flags().AddGoFlagSet(flag.CommandLine) if err := cmd.Execute(); err != nil { klog.Fatal(err) } } options 调用 server.NewWardleServerOption 构建了一个 WardleServerOptions 配置对象 type WardleServerOptions struct { RecommendedOptions *genericoptions.RecommendedOptions SharedInformerFactory informers.SharedInformerFactory StdOut io.Writer StdErr io.Writer } RecommendedOptions 的解释为： // RecommendedOptions contains
-       
-        </div>
-    </a>
-    <p class="post-meta">
-    Posted by Chris Li Friday, March 26, 2021
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="https://xiaosuiba.github.io/2019/02/02/happy-spring-festival/">
-        <h2 class="post-title">
-            Happy Spring Festival
-        </h2>
-	
-        <div class="post-content-preview">
-	
-            Happy Spring Festival 赶在春节前把博客搬迁成 hugo 了 :) 祝大家春节快乐，来年大吉，Happy Spring Festival~
-       
-        </div>
-    </a>
-    <p class="post-meta">
-    Posted by Chris Li Saturday, February 2, 2019
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="https://xiaosuiba.github.io/2019/02/02/hello-world/">
-        <h2 class="post-title">
-            Welcome to ChrisLi&#39;s Blog
-        </h2>
-	
-        <h3 class="post-subtitle">
-            Hello World, Hello Blog
-        </h3>
-	
-        <div class="post-content-preview">
-	
-             “Yeah It&rsquo;s on. ”
- Hello World! 
-       
-        </div>
-    </a>
-    <p class="post-meta">
-    Posted by Chris Li Saturday, February 2, 2019
-    </p>
-</div>
-<hr>
-
+<article>
+    <div class="container">
+        <div class="row">
 
             
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
 
-
-
-       	</div>
-        
-
-<div class="
-    col-lg-3 col-lg-offset-0
-    col-md-3 col-md-offset-0
-    col-sm-12
-    col-xs-12
-    sidebar-container
-">
-    
-    
-    <section>
-        <hr class="hidden-sm hidden-xs">
-        <h5>FEATURED TAGS</h5>
-        <div class="tags">
-             
-            
                 
-                    <a href="/tags/code" title="code">
-                        code
-                    </a>
                 
-            
                 
-                    <a href="/tags/kubernetes" title="kubernetes">
-                        kubernetes
-                    </a>
                 
-            
-        </div>
-    </section>
-    
+                <p>TKEStack需要配置registry域名，默认为<code>default.registry.tke.com</code>，application组件将使用该域名解析到<code>tke-registry-api</code>服务（或者直接解析到gateway也可以）。</p>
+<p>在v1.5版本中，Coredns默认没有配置对该域名的处理，导致用户只能通过Coredns的forward插件，使用外部的DNS做处理；或者修改Coredns配置文件。</p>
+<p>很高兴看到在v1.6.0版本中，该问题得到了解决，Corefile中添加了如下配置：</p>
+<pre><code> ………………
+ rewrite name default.registry.tke.com tke-registry-api.tke.svc.cluster.local
+</code></pre><p>官方对于rewrite插件的解释如下：</p>
+<blockquote>
+<p>Rewrites are invisible to the client. There are simple rewrites (fast) and complex rewrites (slower), but they’re powerful enough to accommodate most dynamic back-end applications.</p>
+</blockquote>
+<p>也即将<code>default.registry.tke.com</code>rewrite到<code>tke-registry-api.tke.svc.cluster.local</code>，也即tke-registry-api地址。</p>
+<p>相关pr: <a href="https://github.com/tkestack/tke/pull/702">feat(registry): add registry&rsquo;s domain names to coredns by tenant</a></p>
 
-    
-    <section class="visible-md visible-lg">
-        <hr><h5><a href="">ABOUT ME</a></h5>
-        <div class="short-about">
-            
-            <img src="/img/chrisli.jpg" />
-            
-            
-                <p>Software Developer, アニメマニア</p>
-            
-           
-           <ul class="list-inline"> 
-               
-               <li>
-                   <a href="https://xiaosuiba.github.io/index.xml" rel="alternate" type="application/rss+xml" title="ChrisLi&#39;s Blog" >
-                       <span class="fa-stack fa-lg">
-                           <i class="fa fa-circle fa-stack-2x"></i>
-                           <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
-                       </span>
-                   </a>
-               </li>
-               
-               
-               
-               
-               
-               
-               <li>
-                   <a target="_blank" href="/your%20wechat%20qr%20code%20image">
-                       <span class="fa-stack fa-lg">
-                           <i class="fa fa-circle fa-stack-2x"></i>
-                           <i class="fa fa-wechat fa-stack-1x fa-inverse"></i>
-                       </span>
-                   </a>
-               </li>
-               
-               
-               <li>
-                   <a target="_blank" href="https://github.com/xiaosuiba">
-                       <span class="fa-stack fa-lg">
-                           <i class="fa fa-circle fa-stack-2x"></i>
-                           <i class="fa fa-github fa-stack-1x fa-inverse"></i>
-                       </span>
-                   </a>
-               </li>
-               
-               
-               
+
+                
+
+                <hr>
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2021/03/26/why-only-new-in-rest-storage-interface/" data-toggle="tooltip" data-placement="top" title="Why rest.Storage interface have only one method">&larr;
+                            Previous Post</a>
+                    </li>
+                    
+                    
                 </ul>
+
+                
+<div id="disqus-comment"></div>
+
+
+
             </div>
-    </section>
-    
-    
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
 
-    
-    
-</div>
+                
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        
+                        <a href="/tags/code" title="code">
+                            code
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/kubernetes" title="kubernetes">
+                            kubernetes
+                        </a>
+                        
+                        
+                    </div>
+                </section>
+                
 
-	</div>
-</div>
-
+                
+                
+            </div>
+        </div>
+    </div>
+</article>
 
 
 
@@ -386,7 +283,7 @@ type Storage interface { // New returns an empty object that can be used with Cr
                 <ul class="list-inline text-center">
                    
                    <li>
-                       <a href="https://xiaosuiba.github.io/index.xml" rel="alternate" type="application/rss+xml" title="ChrisLi&#39;s Blog" >
+                       <a href="" rel="alternate" type="application/rss+xml" title="ChrisLi&#39;s Blog" >
                            <span class="fa-stack fa-lg">
                                <i class="fa fa-circle fa-stack-2x"></i>
                                <i class="fa fa-rss fa-stack-1x fa-inverse"></i>

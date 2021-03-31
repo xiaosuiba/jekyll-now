@@ -6,7 +6,16 @@
     <description>Recent content in kubernetes on ChrisLi&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 29 Mar 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://xiaosuiba.github.io/tags/kubernetes/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 31 Mar 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://xiaosuiba.github.io/tags/kubernetes/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>TKEStack组件不能访问registry域名问题</title>
+      <link>https://xiaosuiba.github.io/2021/03/31/tkestack-registry-dns-issue/</link>
+      <pubDate>Wed, 31 Mar 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://xiaosuiba.github.io/2021/03/31/tkestack-registry-dns-issue/</guid>
+      <description>TKEStack需要配置registry域名，默认为default.registry.tke.com，application组件将使用该域名</description>
+    </item>
+    
     <item>
       <title>Why rest.Storage interface have only one method</title>
       <link>https://xiaosuiba.github.io/2021/03/26/why-only-new-in-rest-storage-interface/</link>
