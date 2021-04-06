@@ -18,9 +18,9 @@
     
 
     
-    <meta name="title" content="TKEStack组件不能访问registry域名问题" />
-    <meta property="og:title" content="TKEStack组件不能访问registry域名问题" />
-    <meta property="twitter:title" content="TKEStack组件不能访问registry域名问题" />
+    <meta name="title" content="TKEStack v1.6.0 global集群中serviceaccount总是默认拥有所有权限" />
+    <meta property="og:title" content="TKEStack v1.6.0 global集群中serviceaccount总是默认拥有所有权限" />
+    <meta property="twitter:title" content="TKEStack v1.6.0 global集群中serviceaccount总是默认拥有所有权限" />
     
 
     
@@ -37,9 +37,9 @@
     <meta name="keyword"  content="">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>TKEStack组件不能访问registry域名问题-打雷不怕的博客 | ChrisLi Blog</title>
+    <title>TKEStack v1.6.0 global集群中serviceaccount总是默认拥有所有权限-打雷不怕的博客 | ChrisLi Blog</title>
 
-    <link rel="canonical" href="/2021/03/31/tkestack-registry-dns-issue/">
+    <link rel="canonical" href="/2021/04/06/tkestack-auth-api-issue/">
 
     <link rel="stylesheet" href="/css/iDisqus.min.css"/>
 	
@@ -170,15 +170,15 @@
                         </a>
                         
                     </div>
-                    <h1>TKEStack组件不能访问registry域名问题</h1>
-                    <h2 class="subheading"></h2>
+                    <h1>TKEStack v1.6.0 global集群中serviceaccount总是默认拥有所有权限</h1>
+                    <h2 class="subheading">Why serviceaccount in tkestack v1.6.0 has full access to all resources by default?</h2>
                     <span class="meta">
 			Posted by 
 			
 			    Chris Li
 			 
 			on 
-			Wednesday, March 31, 2021
+			Tuesday, April 6, 2021
                         
                     </span>
                 </div>
@@ -204,17 +204,86 @@
                 
                 
                 
-                <p>TKEStack需要配置registry域名，默认为<code>default.registry.tke.com</code>，application组件将使用该域名解析到<code>tke-registry-api</code>服务（或者直接解析到gateway也可以）。</p>
-<p>在v1.5版本中，Coredns默认没有配置对该域名的处理，导致用户只能通过Coredns的forward插件，使用外部的DNS做处理；或者修改Coredns配置文件。</p>
-<p>很高兴看到在v1.6.0版本中，该问题得到了解决，Corefile中添加了如下配置：</p>
-<pre><code> ………………
- rewrite name default.registry.tke.com tke-registry-api.tke.svc.cluster.local
-</code></pre><p>官方对于rewrite插件的解释如下：</p>
-<blockquote>
-<p>Rewrites are invisible to the client. There are simple rewrites (fast) and complex rewrites (slower), but they’re powerful enough to accommodate most dynamic back-end applications.</p>
-</blockquote>
-<p>也即将<code>default.registry.tke.com</code>rewrite到<code>tke-registry-api.tke.svc.cluster.local</code>，也即tke-registry-api地址。</p>
-<p>相关pr: <a href="https://github.com/tkestack/tke/pull/702">feat(registry): add registry&rsquo;s domain names to coredns by tenant</a></p>
+                <p>TKEStack v1.6.0已经发布了，没有包含重大更新，但是在使用过程中，我们发现了一个很神奇的现象：global集群中任何serviceaccount都能访问所有的集群资源。这点可以直接使用<code>kubectl auth can-i</code>得到验证：</p>
+<p>在1.5.0集群中执行：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ kubectl auth can-i create pod --as<span style="color:#f92672">=</span>system:serviceaccount:tke:fake
+no
+</code></pre></div><p>而在1.6.0中执行：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ kubectl auth can-i create pod --as<span style="color:#f92672">=</span>system:serviceaccount:tke:fake
+yes
+</code></pre></div><p>我们甚至都还没有创建过fake这个serviceaccount。根据现象，首先怀疑是kube-apiserver的authz配置发生了改变，查看kube-apiserver的配置，果然:</p>
+<pre><code>--authorization-mode=Node,RBAC,Webhook
+</code></pre><p>1.5.0中则只有<code>Node,RBAC</code>，看来问题就出在Webhook中。关于Webhook的说明，<a href="https://kubernetes.io/docs/reference/access-authn-authz/webhook/">官方文档</a>给出了解释。继续查看kubernetes的Webhook配置，配置文件为<code>--authorization-webhook-config-file=/etc/kubernetes/tke-authz-webhook.yaml</code>，文件内容如下：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">  <span style="color:#f92672">tke-authz-webhook.yaml</span>: |<span style="color:#e6db74">
+</span><span style="color:#e6db74">    apiVersion: v1
+</span><span style="color:#e6db74">    kind: Config
+</span><span style="color:#e6db74">    clusters:
+</span><span style="color:#e6db74">      - name: tke
+</span><span style="color:#e6db74">        cluster:
+</span><span style="color:#e6db74">          certificate-authority: /app/certs/ca.crt
+</span><span style="color:#e6db74">          server: http://{vip}:31138/auth/authz
+</span><span style="color:#e6db74">    users:
+</span><span style="color:#e6db74">      - name: admin-cert
+</span><span style="color:#e6db74">        user:
+</span><span style="color:#e6db74">          client-certificate: /app/certs/admin.crt
+</span><span style="color:#e6db74">          client-key: /app/certs/admin.key
+</span><span style="color:#e6db74">    current-context: tke
+</span><span style="color:#e6db74">    contexts:
+</span><span style="color:#e6db74">    - context:
+</span><span style="color:#e6db74">        cluster: tke
+</span><span style="color:#e6db74">        user: admin-cert
+</span><span style="color:#e6db74">      name: tke</span>    
+</code></pre></div><p>webhook代理地址为http://{vip}:31138/auth/authz，也即是tke-auth-api的nodeport。</p>
+<p>继续查看tke-auth-api中认证相关配置：
+/cmd/tke-auth-api/app/app.go</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#ae81ff">cfg, err := config.CreateConfigFromOptions(basename, opts)</span>
+</code></pre></div><p>tke-auth-api/app/config/config.go</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#ae81ff">aggregateAuthz, err := aggregation.NewAuthorizer(authClient, opts.Authorization, opts.Auth, enforcer, opts.Authentication.PrivilegedUsername)</span>
+</code></pre></div><p>/opt/project/tke/pkg/auth/authorization/aggregation/aggregation.go</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#ae81ff">// NewAuthorizer creates a authorizer for subject access review and returns it.</span>
+<span style="color:#ae81ff">func NewAuthorizer(authClient authinternalclient.AuthInterface, authorizationOpts *options.AuthorizationOptions, authOpts *options.AuthOptions, enforcer *casbin.SyncedEnforcer, privilegedUsername string) (authorizer.Authorizer, error) {</span>
+	<span style="color:#ae81ff">var (</span>
+		<span style="color:#ae81ff">authorizers []authorizer.Authorizer</span>
+	<span style="color:#ae81ff">)</span>
+
+	<span style="color:#ae81ff">if len(authorizationOpts.WebhookConfigFile) != 0 {</span>
+		<span style="color:#ae81ff">webhookAuthorizer, err := webhook.New(authorizationOpts.WebhookConfigFile,</span>
+			<span style="color:#ae81ff">authorizationOpts.WebhookVersion,</span>
+			<span style="color:#ae81ff">authorizationOpts.WebhookCacheAuthorizedTTL,</span>
+			<span style="color:#ae81ff">authorizationOpts.WebhookCacheUnauthorizedTTL, nil)</span>
+		<span style="color:#ae81ff">if err != nil {</span>
+			<span style="color:#ae81ff">return nil, err</span>
+		}
+
+		<span style="color:#ae81ff">authorizers = append(authorizers, webhookAuthorizer)</span>
+	}
+
+	<span style="color:#ae81ff">if len(authorizationOpts.PolicyFile) != 0 {</span>
+		<span style="color:#ae81ff">abacAuthorizer, err := abac.NewABACAuthorizer(authorizationOpts.PolicyFile)</span>
+		<span style="color:#ae81ff">if err != nil {</span>
+			<span style="color:#ae81ff">return nil, err</span>
+		}
+		<span style="color:#ae81ff">authorizers = append(authorizers, abacAuthorizer)</span>
+	}
+
+	<span style="color:#ae81ff">authorizers = append(authorizers, local.NewAuthorizer(authClient, enforcer, privilegedUsername))</span>
+
+	<span style="color:#ae81ff">return union.New(authorizers...), nil</span>
+}
+
+</code></pre></div><p>可以看到最终的authrizer配置由webhook（如果有）、abac（如果有）和local组成。auth-api的配置文件：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml">  <span style="color:#a6e22e">tke</span><span style="color:#960050;background-color:#1e0010">-</span><span style="color:#a6e22e">auth</span><span style="color:#960050;background-color:#1e0010">-</span><span style="color:#a6e22e">api</span>.<span style="color:#a6e22e">toml</span><span style="color:#960050;background-color:#1e0010">:</span> <span style="color:#960050;background-color:#1e0010">|</span>
+    ........
+    [<span style="color:#a6e22e">authorization</span>]
+    <span style="color:#a6e22e">policy_file</span>=<span style="color:#e6db74">&#34;/app/conf/abac-policy.json&#34;</span>
+</code></pre></div><p>继续查看abac-policy.json</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">{<span style="color:#f92672">&#34;apiVersion&#34;:&#34;abac.authorization.kubernetes.io/v1beta1&#34;,&#34;kind&#34;:&#34;Policy&#34;,&#34;spec&#34;:{&#34;user&#34;:&#34;system:*&#34;,&#34;namespace&#34;:&#34;*&#34;, &#34;resource&#34;:&#34;*&#34;,&#34;apiGroup&#34;:&#34;*&#34;, &#34;group&#34;: </span><span style="color:#e6db74">&#34;*&#34;</span>, <span style="color:#e6db74">&#34;nonResourcePath&#34;</span>:<span style="color:#e6db74">&#34;*&#34;</span>}}
+</code></pre></div><p>该文件将配置任意<code>system:*</code>配置拥有任意<code>namespace</code>下的所有资源。</p>
+<p>至此，问题原因已经找到了。但问什么TKEStack中如此配置ABAC？这将导致一个明显的漏洞出现。带着问题，我们继续查看github上的修改提交记录：</p>
+<ul>
+<li><a href="https://github.com/tkestack/tke/pull/1155">1155</a>
+但是没有找到任何相关说明为何要如此修改，我将对此issue进行一个comment，希望作者能有相关解释。</li>
+</ul>
 
 
                 
@@ -223,15 +292,10 @@
                 <ul class="pager">
                     
                     <li class="previous">
-                        <a href="/2021/03/26/why-only-new-in-rest-storage-interface/" data-toggle="tooltip" data-placement="top" title="Why rest.Storage interface have only one method">&larr;
+                        <a href="/2021/03/31/tkestack-registry-dns-issue/" data-toggle="tooltip" data-placement="top" title="TKEStack组件不能访问registry域名问题">&larr;
                             Previous Post</a>
                     </li>
                     
-                    
-                    <li class="next">
-                        <a href="/2021/04/06/tkestack-auth-api-issue/" data-toggle="tooltip" data-placement="top" title="TKEStack v1.6.0 global集群中serviceaccount总是默认拥有所有权限">Next
-                            Post &rarr;</a>
-                    </li>
                     
                 </ul>
 

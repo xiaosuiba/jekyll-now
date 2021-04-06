@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-us">
-<head><head>
+<head>
+	<meta name="generator" content="Hugo 0.82.0" /><head>
     <meta name="google-site-verification" content="9vIieCe-Qpd78QOmBl63rGtIVbhY6sYyuxX3j8XWBA4" />
     <meta name="baidu-site-verification" content="LRrmH41lz7" />
     <meta charset="utf-8">
@@ -18,9 +19,9 @@
     
 
     
-    <meta name="title" content="kubernetes" />
-    <meta property="og:title" content="kubernetes" />
-    <meta property="twitter:title" content="kubernetes" />
+    <meta name="title" content="" />
+    <meta property="og:title" content="" />
+    <meta property="twitter:title" content="" />
     
 
     
@@ -37,9 +38,9 @@
     <meta name="keyword"  content="">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>kubernetes-打雷不怕的博客 | ChrisLi Blog</title>
+    <title>ChrisLi&#39;s Blog-打雷不怕的博客 | ChrisLi Blog</title>
 
-    <link rel="canonical" href="/tags/kubernetes/">
+    <link rel="canonical" href="/">
 
     <link rel="stylesheet" href="/css/iDisqus.min.css"/>
 	
@@ -179,78 +180,24 @@
             
 
 <div class="post-preview">
-    <a href="https://xiaosuiba.github.io/2021/04/06/tkestack-auth-api-issue/">
+    <a href="https://xiaosuiba.github.io/2019/02/02/hello-world/">
         <h2 class="post-title">
-            TKEStack v1.6.0 global集群中serviceaccount总是默认拥有所有权限
+            Welcome to ChrisLi&#39;s Blog
         </h2>
 	
         <h3 class="post-subtitle">
-            Why serviceaccount in tkestack v1.6.0 has full access to all resources by default?
+            Hello World, Hello Blog
         </h3>
 	
         <div class="post-content-preview">
 	
-            TKEStack v1.6.0已经发布了，没有包含重大更新，但是在使用过程中，我们发现了一个很神奇的现象：global集群中任何serviceaccount
+             “Yeah It&rsquo;s on. ”
+ Hello World! 
        
         </div>
     </a>
     <p class="post-meta">
-    Posted by Chris Li Tuesday, April 6, 2021
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="https://xiaosuiba.github.io/2021/03/31/tkestack-registry-dns-issue/">
-        <h2 class="post-title">
-            TKEStack组件不能访问registry域名问题
-        </h2>
-	
-        <div class="post-content-preview">
-	
-            TKEStack需要配置registry域名，默认为default.registry.tke.com，application组件将使用该域名
-       
-        </div>
-    </a>
-    <p class="post-meta">
-    Posted by Chris Li Wednesday, March 31, 2021
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="https://xiaosuiba.github.io/2021/03/26/why-only-new-in-rest-storage-interface/">
-        <h2 class="post-title">
-            Why rest.Storage interface have only one method
-        </h2>
-	
-        <div class="post-content-preview">
-	
-            Why rest.Storage interface have only one method While reading Kubernetes source code, I found one question really bothered me for several days. The common interface of rest storage is defined in /vendor/k8s.io/apiserver/pkg/registry/rest/rest.go:
-type Storage interface { // New returns an empty object that can be used with Create and Update after request data has been put into it. 	// This object must be a pointer type for use with Codec.
-       
-        </div>
-    </a>
-    <p class="post-meta">
-    Posted by Chris Li Monday, March 29, 2021
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="https://xiaosuiba.github.io/2021/03/26/kubernetes-sample-apiserver/">
-        <h2 class="post-title">
-            Kubernetes sample-apiserver 代码阅读
-        </h2>
-	
-        <div class="post-content-preview">
-	
-            启动过程 main.go: func main() { logs.InitLogs() defer logs.FlushLogs() stopCh := genericapiserver.SetupSignalHandler() options := server.NewWardleServerOptions(os.Stdout, os.Stderr) cmd := server.NewCommandStartWardleServer(options, stopCh) cmd.Flags().AddGoFlagSet(flag.CommandLine) if err := cmd.Execute(); err != nil { klog.Fatal(err) } } options 调用 server.NewWardleServerOption 构建了一个 WardleServerOptions 配置对象 type WardleServerOptions struct { RecommendedOptions *genericoptions.RecommendedOptions SharedInformerFactory informers.SharedInformerFactory StdOut io.Writer StdErr io.Writer } RecommendedOptions 的解释为： // RecommendedOptions contains
-       
-        </div>
-    </a>
-    <p class="post-meta">
-    Posted by Chris Li Friday, March 26, 2021
+    Posted by Chris Li Saturday, February 2, 2019
     </p>
 </div>
 <hr>
@@ -258,6 +205,15 @@ type Storage interface { // New returns an empty object that can be used with Cr
 
             
 
+
+<ul class="pager">
+    
+    <li class="previous">
+        <a href="/">&larr; Newer Posts</a>
+    </li>
+    
+    
+</ul>
 
 
        	</div>
@@ -308,7 +264,7 @@ type Storage interface { // New returns an empty object that can be used with Cr
            <ul class="list-inline"> 
                
                <li>
-                   <a href="https://xiaosuiba.github.io/tags/kubernetes/index.xml" rel="alternate" type="application/rss+xml" title="ChrisLi&#39;s Blog" >
+                   <a href="https://xiaosuiba.github.io/index.xml" rel="alternate" type="application/rss+xml" title="ChrisLi&#39;s Blog" >
                        <span class="fa-stack fa-lg">
                            <i class="fa fa-circle fa-stack-2x"></i>
                            <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
@@ -366,7 +322,7 @@ type Storage interface { // New returns an empty object that can be used with Cr
                 <ul class="list-inline text-center">
                    
                    <li>
-                       <a href="https://xiaosuiba.github.io/tags/kubernetes/index.xml" rel="alternate" type="application/rss+xml" title="ChrisLi&#39;s Blog" >
+                       <a href="https://xiaosuiba.github.io/index.xml" rel="alternate" type="application/rss+xml" title="ChrisLi&#39;s Blog" >
                            <span class="fa-stack fa-lg">
                                <i class="fa fa-circle fa-stack-2x"></i>
                                <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
