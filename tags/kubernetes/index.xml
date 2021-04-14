@@ -6,7 +6,16 @@
     <description>Recent content in kubernetes on ChrisLi&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 06 Apr 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://xiaosuiba.github.io/tags/kubernetes/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 13 Apr 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://xiaosuiba.github.io/tags/kubernetes/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>TKEStack v1.6.0 1.19版本中pod告警策略失效问题分析</title>
+      <link>https://xiaosuiba.github.io/2021/04/13/tkestack-monitor-controller-issue/</link>
+      <pubDate>Tue, 13 Apr 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://xiaosuiba.github.io/2021/04/13/tkestack-monitor-controller-issue/</guid>
+      <description>日前在使用TKEStack v1.6.0的时候，发现针对工作负载的（也就是pod状态、重启次数）告警失效。我们进行了一定的分析，最终找到原因和</description>
+    </item>
+    
     <item>
       <title>TKEStack v1.6.0 global集群中serviceaccount总是默认拥有所有权限</title>
       <link>https://xiaosuiba.github.io/2021/04/06/tkestack-auth-api-issue/</link>

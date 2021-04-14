@@ -18,9 +18,9 @@
     
 
     
-    <meta name="title" content="Tech" />
-    <meta property="og:title" content="Tech" />
-    <meta property="twitter:title" content="Tech" />
+    <meta name="title" content="TKEStack" />
+    <meta property="og:title" content="TKEStack" />
+    <meta property="twitter:title" content="TKEStack" />
     
 
     
@@ -37,9 +37,9 @@
     <meta name="keyword"  content="">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>Tech-打雷不怕的博客 | ChrisLi Blog</title>
+    <title>TKEStack-打雷不怕的博客 | ChrisLi Blog</title>
 
-    <link rel="canonical" href="/categories/tech/">
+    <link rel="canonical" href="/tags/tkestack/">
 
     <link rel="stylesheet" href="/css/iDisqus.min.css"/>
 	
@@ -240,43 +240,6 @@
 </div>
 <hr>
 
-<div class="post-preview">
-    <a href="https://xiaosuiba.github.io/2021/03/26/why-only-new-in-rest-storage-interface/">
-        <h2 class="post-title">
-            Why rest.Storage interface have only one method
-        </h2>
-	
-        <div class="post-content-preview">
-	
-            Why rest.Storage interface have only one method While reading Kubernetes source code, I found one question really bothered me for several days. The common interface of rest storage is defined in /vendor/k8s.io/apiserver/pkg/registry/rest/rest.go:
-type Storage interface { // New returns an empty object that can be used with Create and Update after request data has been put into it. 	// This object must be a pointer type for use with Codec.
-       
-        </div>
-    </a>
-    <p class="post-meta">
-    Posted by Chris Li Monday, March 29, 2021
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="https://xiaosuiba.github.io/2021/03/26/kubernetes-sample-apiserver/">
-        <h2 class="post-title">
-            Kubernetes sample-apiserver 代码阅读
-        </h2>
-	
-        <div class="post-content-preview">
-	
-            启动过程 main.go: func main() { logs.InitLogs() defer logs.FlushLogs() stopCh := genericapiserver.SetupSignalHandler() options := server.NewWardleServerOptions(os.Stdout, os.Stderr) cmd := server.NewCommandStartWardleServer(options, stopCh) cmd.Flags().AddGoFlagSet(flag.CommandLine) if err := cmd.Execute(); err != nil { klog.Fatal(err) } } options 调用 server.NewWardleServerOption 构建了一个 WardleServerOptions 配置对象 type WardleServerOptions struct { RecommendedOptions *genericoptions.RecommendedOptions SharedInformerFactory informers.SharedInformerFactory StdOut io.Writer StdErr io.Writer } RecommendedOptions 的解释为： // RecommendedOptions contains
-       
-        </div>
-    </a>
-    <p class="post-meta">
-    Posted by Chris Li Friday, March 26, 2021
-    </p>
-</div>
-<hr>
-
 
             
 
@@ -336,7 +299,7 @@ type Storage interface { // New returns an empty object that can be used with Cr
            <ul class="list-inline"> 
                
                <li>
-                   <a href="https://xiaosuiba.github.io/categories/tech/index.xml" rel="alternate" type="application/rss+xml" title="ChrisLi&#39;s Blog" >
+                   <a href="https://xiaosuiba.github.io/tags/tkestack/index.xml" rel="alternate" type="application/rss+xml" title="ChrisLi&#39;s Blog" >
                        <span class="fa-stack fa-lg">
                            <i class="fa fa-circle fa-stack-2x"></i>
                            <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
@@ -394,7 +357,7 @@ type Storage interface { // New returns an empty object that can be used with Cr
                 <ul class="list-inline text-center">
                    
                    <li>
-                       <a href="https://xiaosuiba.github.io/categories/tech/index.xml" rel="alternate" type="application/rss+xml" title="ChrisLi&#39;s Blog" >
+                       <a href="https://xiaosuiba.github.io/tags/tkestack/index.xml" rel="alternate" type="application/rss+xml" title="ChrisLi&#39;s Blog" >
                            <span class="fa-stack fa-lg">
                                <i class="fa fa-circle fa-stack-2x"></i>
                                <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
