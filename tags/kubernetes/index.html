@@ -179,6 +179,24 @@
             
 
 <div class="post-preview">
+    <a href="https://xiaosuiba.github.io/2021/05/10/how-does-tkestack-localidentity-make-use-of-generatename/">
+        <h2 class="post-title">
+            TKEStack中LocalIdentity如何利用generateName机制生成Name
+        </h2>
+	
+        <div class="post-content-preview">
+	
+            日前在研究TKEStack用户机制中，发现创建LocalIdentiy时，并没有传入metadata.name，而最终系统会生成一个随机值，
+       
+        </div>
+    </a>
+    <p class="post-meta">
+    Posted by Chris Li Monday, May 10, 2021
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
     <a href="https://xiaosuiba.github.io/2021/04/13/tkestack-monitor-controller-issue/">
         <h2 class="post-title">
             TKEStack v1.6.0 1.19版本中pod告警策略失效问题分析
@@ -259,27 +277,18 @@ type Storage interface { // New returns an empty object that can be used with Cr
 </div>
 <hr>
 
-<div class="post-preview">
-    <a href="https://xiaosuiba.github.io/2021/03/26/kubernetes-sample-apiserver/">
-        <h2 class="post-title">
-            Kubernetes sample-apiserver 代码阅读
-        </h2>
-	
-        <div class="post-content-preview">
-	
-            启动过程 main.go: func main() { logs.InitLogs() defer logs.FlushLogs() stopCh := genericapiserver.SetupSignalHandler() options := server.NewWardleServerOptions(os.Stdout, os.Stderr) cmd := server.NewCommandStartWardleServer(options, stopCh) cmd.Flags().AddGoFlagSet(flag.CommandLine) if err := cmd.Execute(); err != nil { klog.Fatal(err) } } options 调用 server.NewWardleServerOption 构建了一个 WardleServerOptions 配置对象 type WardleServerOptions struct { RecommendedOptions *genericoptions.RecommendedOptions SharedInformerFactory informers.SharedInformerFactory StdOut io.Writer StdErr io.Writer } RecommendedOptions 的解释为： // RecommendedOptions contains
-       
-        </div>
-    </a>
-    <p class="post-meta">
-    Posted by Chris Li Friday, March 26, 2021
-    </p>
-</div>
-<hr>
-
 
             
 
+
+<ul class="pager">
+    
+    
+    <li class="next">
+        <a href="/tags/kubernetes/page/2/">Older Posts &rarr;</a>
+    </li>
+    
+</ul>
 
 
        	</div>

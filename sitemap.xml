@@ -3,28 +3,31 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://xiaosuiba.github.io/categories/</loc>
-    <lastmod>2021-04-13T00:00:00+00:00</lastmod>
+    <lastmod>2021-05-10T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://xiaosuiba.github.io/</loc>
-    <lastmod>2021-04-13T00:00:00+00:00</lastmod>
+    <lastmod>2021-05-10T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://xiaosuiba.github.io/tags/code/</loc>
-    <lastmod>2021-04-13T00:00:00+00:00</lastmod>
+    <lastmod>2021-05-10T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://xiaosuiba.github.io/tags/kubernetes/</loc>
-    <lastmod>2021-04-13T00:00:00+00:00</lastmod>
+    <lastmod>2021-05-10T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://xiaosuiba.github.io/post/</loc>
-    <lastmod>2021-04-13T00:00:00+00:00</lastmod>
+    <lastmod>2021-05-10T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://xiaosuiba.github.io/tags/</loc>
-    <lastmod>2021-04-13T00:00:00+00:00</lastmod>
+    <lastmod>2021-05-10T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://xiaosuiba.github.io/categories/tech/</loc>
-    <lastmod>2021-04-13T00:00:00+00:00</lastmod>
+    <lastmod>2021-05-10T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://xiaosuiba.github.io/tags/tkestack/</loc>
-    <lastmod>2021-04-13T00:00:00+00:00</lastmod>
+    <lastmod>2021-05-10T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://xiaosuiba.github.io/2021/05/10/how-does-tkestack-localidentity-make-use-of-generatename/</loc>
+    <lastmod>2021-05-10T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://xiaosuiba.github.io/2021/04/13/tkestack-monitor-controller-issue/</loc>
     <lastmod>2021-04-13T00:00:00+00:00</lastmod>

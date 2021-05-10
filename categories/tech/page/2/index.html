@@ -179,100 +179,19 @@
             
 
 <div class="post-preview">
-    <a href="https://xiaosuiba.github.io/2021/05/10/how-does-tkestack-localidentity-make-use-of-generatename/">
+    <a href="https://xiaosuiba.github.io/2021/03/26/kubernetes-sample-apiserver/">
         <h2 class="post-title">
-            TKEStack中LocalIdentity如何利用generateName机制生成Name
+            Kubernetes sample-apiserver 代码阅读
         </h2>
 	
         <div class="post-content-preview">
 	
-            日前在研究TKEStack用户机制中，发现创建LocalIdentiy时，并没有传入metadata.name，而最终系统会生成一个随机值，
+            启动过程 main.go: func main() { logs.InitLogs() defer logs.FlushLogs() stopCh := genericapiserver.SetupSignalHandler() options := server.NewWardleServerOptions(os.Stdout, os.Stderr) cmd := server.NewCommandStartWardleServer(options, stopCh) cmd.Flags().AddGoFlagSet(flag.CommandLine) if err := cmd.Execute(); err != nil { klog.Fatal(err) } } options 调用 server.NewWardleServerOption 构建了一个 WardleServerOptions 配置对象 type WardleServerOptions struct { RecommendedOptions *genericoptions.RecommendedOptions SharedInformerFactory informers.SharedInformerFactory StdOut io.Writer StdErr io.Writer } RecommendedOptions 的解释为： // RecommendedOptions contains
        
         </div>
     </a>
     <p class="post-meta">
-    Posted by Chris Li Monday, May 10, 2021
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="https://xiaosuiba.github.io/2021/04/13/tkestack-monitor-controller-issue/">
-        <h2 class="post-title">
-            TKEStack v1.6.0 1.19版本中pod告警策略失效问题分析
-        </h2>
-	
-        <h3 class="post-subtitle">
-            Why pod alarm fails to work in v1.19 cluster in TKEStack v1.6.0?
-        </h3>
-	
-        <div class="post-content-preview">
-	
-            日前在使用TKEStack v1.6.0的时候，发现针对工作负载的（也就是pod状态、重启次数）告警失效。我们进行了一定的分析，最终找到原因和
-       
-        </div>
-    </a>
-    <p class="post-meta">
-    Posted by Chris Li Tuesday, April 13, 2021
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="https://xiaosuiba.github.io/2021/04/06/tkestack-auth-api-issue/">
-        <h2 class="post-title">
-            TKEStack v1.6.0 global集群中serviceaccount总是默认拥有所有权限
-        </h2>
-	
-        <h3 class="post-subtitle">
-            Why serviceaccount in tkestack v1.6.0 has full access to all resources by default?
-        </h3>
-	
-        <div class="post-content-preview">
-	
-            TKEStack v1.6.0已经发布了，没有包含重大更新，但是在使用过程中，我们发现了一个很神奇的现象：global集群中任何serviceaccount
-       
-        </div>
-    </a>
-    <p class="post-meta">
-    Posted by Chris Li Tuesday, April 6, 2021
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="https://xiaosuiba.github.io/2021/03/31/tkestack-registry-dns-issue/">
-        <h2 class="post-title">
-            TKEStack组件不能访问registry域名问题
-        </h2>
-	
-        <div class="post-content-preview">
-	
-            TKEStack需要配置registry域名，默认为default.registry.tke.com，application组件将使用该域名
-       
-        </div>
-    </a>
-    <p class="post-meta">
-    Posted by Chris Li Wednesday, March 31, 2021
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="https://xiaosuiba.github.io/2021/03/26/why-only-new-in-rest-storage-interface/">
-        <h2 class="post-title">
-            Why rest.Storage interface have only one method
-        </h2>
-	
-        <div class="post-content-preview">
-	
-            Why rest.Storage interface have only one method While reading Kubernetes source code, I found one question really bothered me for several days. The common interface of rest storage is defined in /vendor/k8s.io/apiserver/pkg/registry/rest/rest.go:
-type Storage interface { // New returns an empty object that can be used with Create and Update after request data has been put into it. 	// This object must be a pointer type for use with Codec.
-       
-        </div>
-    </a>
-    <p class="post-meta">
-    Posted by Chris Li Monday, March 29, 2021
+    Posted by Chris Li Friday, March 26, 2021
     </p>
 </div>
 <hr>
@@ -283,10 +202,10 @@ type Storage interface { // New returns an empty object that can be used with Cr
 
 <ul class="pager">
     
-    
-    <li class="next">
-        <a href="/categories/tech/page/2/">Older Posts &rarr;</a>
+    <li class="previous">
+        <a href="/categories/tech/">&larr; Newer Posts</a>
     </li>
+    
     
 </ul>
 
