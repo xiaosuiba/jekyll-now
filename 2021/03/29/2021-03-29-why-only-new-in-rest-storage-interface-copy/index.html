@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    <meta charset="utf-8" />
+<title>Why rest.Storage interface contains only one method</title>
+
+
+  
+
+
+
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link
+  rel="alternate"
+  type="application/rss+xml"
+  href="https://xiaosuiba.github.io/index.xml"
+  title="ChrisLi&#39;s Blog"
+/>
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Why rest.Storage interface contains only one method"/>
+<meta name="twitter:description" content="rest.Storage interface contains only one method. This page show how could it utilize golang reflection to do the job."/>
+
+
+
+<link rel="stylesheet" href="https://xiaosuiba.github.io/fontawesome/css/all.min.css" />
+
+<link
+  id="dark-mode-theme"
+  rel="stylesheet"
+  href="https://xiaosuiba.github.io/css/dark.css"
+/>
+
+<script>
+  var darkTheme = document.getElementById('dark-mode-theme')
+  var storedTheme = localStorage.getItem('dark-mode-storage')
+  if (storedTheme === 'dark') {
+    darkTheme.disabled = false
+  } else if (storedTheme === 'light') {
+    darkTheme.disabled = true
+  }
+</script>
+
+<script src="https://xiaosuiba.github.io/js/main.bundle.js"></script>
+<script src="https://xiaosuiba.github.io/js/instantpage.min.js" type="module" defer></script>
+<meta name="generator" content="Hugo 0.83.1" />
+  </head>
+  <body>
+    
+  
+
+
+
+
+  <header>
+    <nav class="navbar">
+  <div class="nav">
+    
+      <a href="https://xiaosuiba.github.io/" class="nav-logo">
+        <img
+          src="https://xiaosuiba.github.io/images/icon.png"
+          width="50"
+          height="50"
+          alt="Logo"
+        />
+      </a>
+    
+
+    <ul class="nav-links">
+      
+        
+          <li>
+            <a href="/about/" id="About"
+              ><em class="fas fa-user fa-lg"></em
+            ></a>
+          </li>
+          
+      
+        
+          <li>
+            <a href="/tags/" id="Tags"
+              ><em class="fas fa-tag fa-lg"></em
+            ></a>
+          </li>
+          
+      
+        
+          <li>
+            <a href="/search/" id="Search"
+              ><em class="fas fa-search fa-lg"></em
+            ></a>
+          </li>
+          
+      
+    </ul>
+  </div>
+</nav>
+
+    <div class="intro-header">
+      <div class="container">
+        <div class="post-heading">
+          
+            <h1>
+              Why rest.Storage interface contains only one method
+            </h1>
+          
+          
+            <span class="meta-post">
+  <em class="fa fa-calendar-alt"></em
+  >&nbsp;Mar 29, 2021
+  
+    &nbsp;&nbsp;&nbsp;<em class="fa fa-folder-open"></em>&nbsp;
+    
+      <a
+        href="https://xiaosuiba.github.io/categories/tech/"
+        >Tech</a
+      >&nbsp;
+    
+  
+</span>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+  
+
+    
+  <div class="container" role="main">
+    <article class="article" class="blog-post">
+      
+  <p>rest.Storage interface contains only one method. This page show how could it utilize golang reflection to do the job.</p>
+<h1 id="why-reststorage-interface-have-only-one-method">Why rest.Storage interface have only one method</h1>
+<p>While reading Kubernetes source code, I found one question really bothered me for several days. The common interface of rest storage is defined in <code>/vendor/k8s.io/apiserver/pkg/registry/rest/rest.go</code>:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-golang" data-lang="golang"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Storage</span> <span style="color:#66d9ef">interface</span> {
+	<span style="color:#75715e">// New returns an empty object that can be used with Create and Update after request data has been put into it.
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">// This object must be a pointer type for use with Codec.DecodeInto([]byte, runtime.Object)
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">New</span>() <span style="color:#a6e22e">runtime</span>.<span style="color:#a6e22e">Object</span>
+}
+</code></pre></div><p>You can see there&rsquo;s only one method <code>New</code> defined here. So how could the other actions, like <code>Get</code> or <code>List</code> etc., be completed?</p>
+<p>After several day&rsquo;s search on the internet, I finally found the some code in <code>/vendor/k8s.io/apiserver/pkg/endpoints/installer.go</code>:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-golang" data-lang="golang"><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">a</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">APIInstaller</span>) <span style="color:#a6e22e">registerResourceHandlers</span>(<span style="color:#a6e22e">path</span> <span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">storage</span> <span style="color:#a6e22e">rest</span>.<span style="color:#a6e22e">Storage</span>, <span style="color:#a6e22e">ws</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">restful</span>.<span style="color:#a6e22e">WebService</span>) (<span style="color:#f92672">*</span><span style="color:#a6e22e">metav1</span>.<span style="color:#a6e22e">APIResource</span>, <span style="color:#f92672">*</span><span style="color:#a6e22e">storageversion</span>.<span style="color:#a6e22e">ResourceInfo</span>, <span style="color:#66d9ef">error</span>) {
+<span style="color:#f92672">...</span>..
+	<span style="color:#75715e">// what verbs are supported by the storage, used to know what verbs we support per path
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">creater</span>, <span style="color:#a6e22e">isCreater</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">storage</span>.(<span style="color:#a6e22e">rest</span>.<span style="color:#a6e22e">Creater</span>)
+	<span style="color:#a6e22e">namedCreater</span>, <span style="color:#a6e22e">isNamedCreater</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">storage</span>.(<span style="color:#a6e22e">rest</span>.<span style="color:#a6e22e">NamedCreater</span>)
+	<span style="color:#a6e22e">lister</span>, <span style="color:#a6e22e">isLister</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">storage</span>.(<span style="color:#a6e22e">rest</span>.<span style="color:#a6e22e">Lister</span>)
+	<span style="color:#a6e22e">getter</span>, <span style="color:#a6e22e">isGetter</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">storage</span>.(<span style="color:#a6e22e">rest</span>.<span style="color:#a6e22e">Getter</span>)
+	<span style="color:#a6e22e">getterWithOptions</span>, <span style="color:#a6e22e">isGetterWithOptions</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">storage</span>.(<span style="color:#a6e22e">rest</span>.<span style="color:#a6e22e">GetterWithOptions</span>)
+	<span style="color:#a6e22e">gracefulDeleter</span>, <span style="color:#a6e22e">isGracefulDeleter</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">storage</span>.(<span style="color:#a6e22e">rest</span>.<span style="color:#a6e22e">GracefulDeleter</span>)
+	<span style="color:#a6e22e">collectionDeleter</span>, <span style="color:#a6e22e">isCollectionDeleter</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">storage</span>.(<span style="color:#a6e22e">rest</span>.<span style="color:#a6e22e">CollectionDeleter</span>)
+	<span style="color:#a6e22e">updater</span>, <span style="color:#a6e22e">isUpdater</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">storage</span>.(<span style="color:#a6e22e">rest</span>.<span style="color:#a6e22e">Updater</span>)
+	<span style="color:#a6e22e">patcher</span>, <span style="color:#a6e22e">isPatcher</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">storage</span>.(<span style="color:#a6e22e">rest</span>.<span style="color:#a6e22e">Patcher</span>)
+	<span style="color:#a6e22e">watcher</span>, <span style="color:#a6e22e">isWatcher</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">storage</span>.(<span style="color:#a6e22e">rest</span>.<span style="color:#a6e22e">Watcher</span>)
+	<span style="color:#a6e22e">connecter</span>, <span style="color:#a6e22e">isConnecter</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">storage</span>.(<span style="color:#a6e22e">rest</span>.<span style="color:#a6e22e">Connecter</span>)
+	<span style="color:#a6e22e">storageMeta</span>, <span style="color:#a6e22e">isMetadata</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">storage</span>.(<span style="color:#a6e22e">rest</span>.<span style="color:#a6e22e">StorageMetadata</span>)
+	<span style="color:#a6e22e">storageVersionProvider</span>, <span style="color:#a6e22e">isStorageVersionProvider</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">storage</span>.(<span style="color:#a6e22e">rest</span>.<span style="color:#a6e22e">StorageVersionProvider</span>)
+</code></pre></div><p>see here, <code>registerResourceHandlers</code> utilizes golang type conversion to check the storage&rsquo;s abilities. So the <code>New</code> method is only a sign of rest.storage interface. The real abilities could be defined in resource storage struct as needed. The methods defined in each specific resource storage type represents its ability in the same time.</p>
+
+
+
+      
+        <div class="blog-tags">
+          
+            <a
+              href="https://xiaosuiba.github.io/tags/kubernetes/"
+              >kubernetes</a
+            >&nbsp;
+          
+            <a
+              href="https://xiaosuiba.github.io/tags/code/"
+              >code</a
+            >&nbsp;
+          
+        </div>
+      
+    </article>
+    
+    
+      
+
+    
+  </div>
+
+    <footer>
+  
+
+<div class="social-icons">
+  
+    
+    
+      
+      <a href="https://twitter.com/xiaosuiba" name="Twitter">
+        <em class="fab fa-twitter"></em>
+      </a>
+    
+       &nbsp;&ndash;&nbsp;
+      <a href="https://github.com/xiaosuiba" name="GitHub">
+        <em class="fab fa-github"></em>
+      </a>
+    
+  
+
+  
+</div>
+
+
+  
+  <div class="container">
+    <p class="credits copyright">
+      <a href="https://xiaosuiba.github.io/about">Chris Li</a>
+      &nbsp;&copy;
+      2021
+      
+        &nbsp;/&nbsp;
+        <a href="https://xiaosuiba.github.io/">ChrisLi&#39;s Blog</a>
+      
+      &nbsp;&ndash;&nbsp;
+      <em class="fas fa-moon" id="dark-mode-toggle"></em>
+    </p>
+
+    <p class="credits theme-by">
+      Powered By <a href="https://gohugo.io">Hugo</a>&nbsp;
+      Theme
+      <a href="https://github.com/matsuyoshi30/harbor">Harbor</a>
+    </p>
+  </div>
+</footer>
+
+  </body>
+</html>

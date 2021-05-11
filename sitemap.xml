@@ -2,6 +2,8 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://xiaosuiba.github.io/about/</loc>
+  </url><url>
     <loc>https://xiaosuiba.github.io/categories/</loc>
     <lastmod>2021-05-10T00:00:00+00:00</lastmod>
   </url><url>
@@ -26,36 +28,29 @@
     <loc>https://xiaosuiba.github.io/tags/tkestack/</loc>
     <lastmod>2021-05-10T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://xiaosuiba.github.io/2021/05/10/how-does-tkestack-localidentity-make-use-of-generatename/</loc>
+    <loc>https://xiaosuiba.github.io/2021/05/10/2021-05-10-how-does-tkestack-localidentity-make-use-of-generatename/</loc>
     <lastmod>2021-05-10T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://xiaosuiba.github.io/2021/04/13/tkestack-monitor-controller-issue/</loc>
+    <loc>https://xiaosuiba.github.io/2021/04/13/2021-04-13-tkestack-monitor-controller-issue/</loc>
     <lastmod>2021-04-13T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://xiaosuiba.github.io/2021/04/06/tkestack-auth-api-issue/</loc>
+    <loc>https://xiaosuiba.github.io/2021/04/06/2021-04-06-tkestack-auth-api-issue/</loc>
     <lastmod>2021-04-06T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://xiaosuiba.github.io/2021/03/31/tkestack-registry-dns-issue/</loc>
+    <loc>https://xiaosuiba.github.io/2021/03/31/2021-03-31-tkestack-registry-dns-issue/</loc>
     <lastmod>2021-03-31T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://xiaosuiba.github.io/2021/03/26/why-only-new-in-rest-storage-interface/</loc>
+    <loc>https://xiaosuiba.github.io/2021/03/29/2021-03-29-why-only-new-in-rest-storage-interface-copy/</loc>
     <lastmod>2021-03-29T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://xiaosuiba.github.io/2021/03/26/kubernetes-sample-apiserver/</loc>
+    <loc>https://xiaosuiba.github.io/2021/03/26/2021-03-26-kubernetes-sample-apiserver/</loc>
     <lastmod>2021-03-26T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://xiaosuiba.github.io/2019/02/02/happy-spring-festival/</loc>
+    <loc>https://xiaosuiba.github.io/2019/02/02/2020-02-02-happy-spring-festival/</loc>
     <lastmod>2019-02-02T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://xiaosuiba.github.io/2019/02/02/hello-world/</loc>
-    <lastmod>2019-02-02T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://xiaosuiba.github.io/search/placeholder/</loc>
-  </url><url>
-    <loc>https://xiaosuiba.github.io/top/about/</loc>
+    <loc>https://xiaosuiba.github.io/page/</loc>
   </url><url>
     <loc>https://xiaosuiba.github.io/search/</loc>
-  </url><url>
-    <loc>https://xiaosuiba.github.io/top/</loc>
   </url>
 </urlset>

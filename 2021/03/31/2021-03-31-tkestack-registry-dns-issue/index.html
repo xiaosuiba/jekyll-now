@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    <meta charset="utf-8" />
+<title>TKEStack组件不能访问registry域名问题</title>
+
+
+  
+
+
+
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link
+  rel="alternate"
+  type="application/rss+xml"
+  href="https://xiaosuiba.github.io/index.xml"
+  title="ChrisLi&#39;s Blog"
+/>
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="TKEStack组件不能访问registry域名问题"/>
+<meta name="twitter:description" content="本文从探索了TKEStack 1.5版本中TKEStack组件不能访问registry域名的原因，并给出解决办法。"/>
+
+
+
+<link rel="stylesheet" href="https://xiaosuiba.github.io/fontawesome/css/all.min.css" />
+
+<link
+  id="dark-mode-theme"
+  rel="stylesheet"
+  href="https://xiaosuiba.github.io/css/dark.css"
+/>
+
+<script>
+  var darkTheme = document.getElementById('dark-mode-theme')
+  var storedTheme = localStorage.getItem('dark-mode-storage')
+  if (storedTheme === 'dark') {
+    darkTheme.disabled = false
+  } else if (storedTheme === 'light') {
+    darkTheme.disabled = true
+  }
+</script>
+
+<script src="https://xiaosuiba.github.io/js/main.bundle.js"></script>
+<script src="https://xiaosuiba.github.io/js/instantpage.min.js" type="module" defer></script>
+<meta name="generator" content="Hugo 0.83.1" />
+  </head>
+  <body>
+    
+  
+
+
+
+
+  <header>
+    <nav class="navbar">
+  <div class="nav">
+    
+      <a href="https://xiaosuiba.github.io/" class="nav-logo">
+        <img
+          src="https://xiaosuiba.github.io/images/icon.png"
+          width="50"
+          height="50"
+          alt="Logo"
+        />
+      </a>
+    
+
+    <ul class="nav-links">
+      
+        
+          <li>
+            <a href="/about/" id="About"
+              ><em class="fas fa-user fa-lg"></em
+            ></a>
+          </li>
+          
+      
+        
+          <li>
+            <a href="/tags/" id="Tags"
+              ><em class="fas fa-tag fa-lg"></em
+            ></a>
+          </li>
+          
+      
+        
+          <li>
+            <a href="/search/" id="Search"
+              ><em class="fas fa-search fa-lg"></em
+            ></a>
+          </li>
+          
+      
+    </ul>
+  </div>
+</nav>
+
+    <div class="intro-header">
+      <div class="container">
+        <div class="post-heading">
+          
+            <h1>
+              TKEStack组件不能访问registry域名问题
+            </h1>
+          
+          
+            <span class="meta-post">
+  <em class="fa fa-calendar-alt"></em
+  >&nbsp;Mar 31, 2021
+  
+    &nbsp;&nbsp;&nbsp;<em class="fa fa-folder-open"></em>&nbsp;
+    
+      <a
+        href="https://xiaosuiba.github.io/categories/tech/"
+        >Tech</a
+      >&nbsp;
+    
+  
+</span>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+  
+
+    
+  <div class="container" role="main">
+    <article class="article" class="blog-post">
+      
+  <p>本文从探索了TKEStack 1.5版本中TKEStack组件不能访问registry域名的原因，并给出解决办法。</p>
+<p>TKEStack需要配置registry域名，默认为<code>default.registry.tke.com</code>，application组件将使用该域名解析到<code>tke-registry-api</code>服务（或者直接解析到gateway也可以）。</p>
+<p>在v1.5版本中，Coredns默认没有配置对该域名的处理，导致用户只能通过Coredns的forward插件，使用外部的DNS做处理；或者修改Coredns配置文件。</p>
+<p>很高兴看到在v1.6.0版本中，该问题得到了解决，Corefile中添加了如下配置：</p>
+<pre><code> ………………
+ rewrite name default.registry.tke.com tke-registry-api.tke.svc.cluster.local
+</code></pre><p>官方对于rewrite插件的解释如下：</p>
+<blockquote>
+<p>Rewrites are invisible to the client. There are simple rewrites (fast) and complex rewrites (slower), but they’re powerful enough to accommodate most dynamic back-end applications.</p>
+</blockquote>
+<p>也即将<code>default.registry.tke.com</code>rewrite到<code>tke-registry-api.tke.svc.cluster.local</code>，也即tke-registry-api地址。</p>
+<p>相关pr: <a href="https://github.com/tkestack/tke/pull/702">feat(registry): add registry&rsquo;s domain names to coredns by tenant</a></p>
+
+
+
+      
+        <div class="blog-tags">
+          
+            <a
+              href="https://xiaosuiba.github.io/tags/kubernetes/"
+              >kubernetes</a
+            >&nbsp;
+          
+            <a
+              href="https://xiaosuiba.github.io/tags/code/"
+              >code</a
+            >&nbsp;
+          
+            <a
+              href="https://xiaosuiba.github.io/tags/tkestack/"
+              >TKEStack</a
+            >&nbsp;
+          
+        </div>
+      
+    </article>
+    
+    
+      
+
+    
+  </div>
+
+    <footer>
+  
+
+<div class="social-icons">
+  
+    
+    
+      
+      <a href="https://twitter.com/xiaosuiba" name="Twitter">
+        <em class="fab fa-twitter"></em>
+      </a>
+    
+       &nbsp;&ndash;&nbsp;
+      <a href="https://github.com/xiaosuiba" name="GitHub">
+        <em class="fab fa-github"></em>
+      </a>
+    
+  
+
+  
+</div>
+
+
+  
+  <div class="container">
+    <p class="credits copyright">
+      <a href="https://xiaosuiba.github.io/about">Chris Li</a>
+      &nbsp;&copy;
+      2021
+      
+        &nbsp;/&nbsp;
+        <a href="https://xiaosuiba.github.io/">ChrisLi&#39;s Blog</a>
+      
+      &nbsp;&ndash;&nbsp;
+      <em class="fas fa-moon" id="dark-mode-toggle"></em>
+    </p>
+
+    <p class="credits theme-by">
+      Powered By <a href="https://gohugo.io">Hugo</a>&nbsp;
+      Theme
+      <a href="https://github.com/matsuyoshi30/harbor">Harbor</a>
+    </p>
+  </div>
+</footer>
+
+  </body>
+</html>

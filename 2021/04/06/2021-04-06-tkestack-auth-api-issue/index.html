@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    <meta charset="utf-8" />
+<title>TKEStack v1.6.0 global集群中serviceaccount总是默认拥有所有权限</title>
+
+
+  
+
+
+
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link
+  rel="alternate"
+  type="application/rss+xml"
+  href="https://xiaosuiba.github.io/index.xml"
+  title="ChrisLi&#39;s Blog"
+/>
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="TKEStack v1.6.0 global集群中serviceaccount总是默认拥有所有权限"/>
+<meta name="twitter:description" content="Why serviceaccount in tkestack v1.6.0 has full access to all resources by default?"/>
+
+
+
+<link rel="stylesheet" href="https://xiaosuiba.github.io/fontawesome/css/all.min.css" />
+
+<link
+  id="dark-mode-theme"
+  rel="stylesheet"
+  href="https://xiaosuiba.github.io/css/dark.css"
+/>
+
+<script>
+  var darkTheme = document.getElementById('dark-mode-theme')
+  var storedTheme = localStorage.getItem('dark-mode-storage')
+  if (storedTheme === 'dark') {
+    darkTheme.disabled = false
+  } else if (storedTheme === 'light') {
+    darkTheme.disabled = true
+  }
+</script>
+
+<script src="https://xiaosuiba.github.io/js/main.bundle.js"></script>
+<script src="https://xiaosuiba.github.io/js/instantpage.min.js" type="module" defer></script>
+<meta name="generator" content="Hugo 0.83.1" />
+  </head>
+  <body>
+    
+  
+
+
+
+
+  <header>
+    <nav class="navbar">
+  <div class="nav">
+    
+      <a href="https://xiaosuiba.github.io/" class="nav-logo">
+        <img
+          src="https://xiaosuiba.github.io/images/icon.png"
+          width="50"
+          height="50"
+          alt="Logo"
+        />
+      </a>
+    
+
+    <ul class="nav-links">
+      
+        
+          <li>
+            <a href="/about/" id="About"
+              ><em class="fas fa-user fa-lg"></em
+            ></a>
+          </li>
+          
+      
+        
+          <li>
+            <a href="/tags/" id="Tags"
+              ><em class="fas fa-tag fa-lg"></em
+            ></a>
+          </li>
+          
+      
+        
+          <li>
+            <a href="/search/" id="Search"
+              ><em class="fas fa-search fa-lg"></em
+            ></a>
+          </li>
+          
+      
+    </ul>
+  </div>
+</nav>
+
+    <div class="intro-header">
+      <div class="container">
+        <div class="post-heading">
+          
+            <h1>
+              TKEStack v1.6.0 global集群中serviceaccount总是默认拥有所有权限
+            </h1>
+          
+          
+            <span class="meta-post">
+  <em class="fa fa-calendar-alt"></em
+  >&nbsp;Apr 6, 2021
+  
+    &nbsp;&nbsp;&nbsp;<em class="fa fa-folder-open"></em>&nbsp;
+    
+      <a
+        href="https://xiaosuiba.github.io/categories/tech/"
+        >Tech</a
+      >&nbsp;
+    
+  
+</span>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+  
+
+    
+  <div class="container" role="main">
+    <article class="article" class="blog-post">
+      
+  <p>本文从探索了TKEStack 1.6中global集群任何serviceaccount均具有cluster-admin权限原因。</p>
+<p>TKEStack v1.6.0已经发布了，没有包含重大更新，但是在使用过程中，我们发现了一个很神奇的现象：global集群中任何serviceaccount都能访问所有的集群资源。这点可以直接使用<code>kubectl auth can-i</code>得到验证：</p>
+<p>在1.5.0集群中执行：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ kubectl auth can-i create pod --as<span style="color:#f92672">=</span>system:serviceaccount:tke:fake
+no
+</code></pre></div><p>而在1.6.0中执行：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ kubectl auth can-i create pod --as<span style="color:#f92672">=</span>system:serviceaccount:tke:fake
+yes
+</code></pre></div><p>我们甚至都还没有创建过fake这个serviceaccount。根据现象，首先怀疑是kube-apiserver的authz配置发生了改变，查看kube-apiserver的配置，果然:</p>
+<pre><code>--authorization-mode=Node,RBAC,Webhook
+</code></pre><p>1.5.0中则只有<code>Node,RBAC</code>，看来问题就出在Webhook中。关于Webhook的说明，<a href="https://kubernetes.io/docs/reference/access-authn-authz/webhook/">官方文档</a>给出了解释。继续查看kubernetes的Webhook配置，配置文件为<code>--authorization-webhook-config-file=/etc/kubernetes/tke-authz-webhook.yaml</code>，文件内容如下：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">  <span style="color:#f92672">tke-authz-webhook.yaml</span>: |<span style="color:#e6db74">
+</span><span style="color:#e6db74">    apiVersion: v1
+</span><span style="color:#e6db74">    kind: Config
+</span><span style="color:#e6db74">    clusters:
+</span><span style="color:#e6db74">      - name: tke
+</span><span style="color:#e6db74">        cluster:
+</span><span style="color:#e6db74">          certificate-authority: /app/certs/ca.crt
+</span><span style="color:#e6db74">          server: http://{vip}:31138/auth/authz
+</span><span style="color:#e6db74">    users:
+</span><span style="color:#e6db74">      - name: admin-cert
+</span><span style="color:#e6db74">        user:
+</span><span style="color:#e6db74">          client-certificate: /app/certs/admin.crt
+</span><span style="color:#e6db74">          client-key: /app/certs/admin.key
+</span><span style="color:#e6db74">    current-context: tke
+</span><span style="color:#e6db74">    contexts:
+</span><span style="color:#e6db74">    - context:
+</span><span style="color:#e6db74">        cluster: tke
+</span><span style="color:#e6db74">        user: admin-cert
+</span><span style="color:#e6db74">      name: tke</span>    
+</code></pre></div><p>webhook代理地址为http://{vip}:31138/auth/authz，也即是tke-auth-api的nodeport。</p>
+<p>继续查看tke-auth-api中认证相关配置：
+/cmd/tke-auth-api/app/app.go</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#ae81ff">cfg, err := config.CreateConfigFromOptions(basename, opts)</span>
+</code></pre></div><p>tke-auth-api/app/config/config.go</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#ae81ff">aggregateAuthz, err := aggregation.NewAuthorizer(authClient, opts.Authorization, opts.Auth, enforcer, opts.Authentication.PrivilegedUsername)</span>
+</code></pre></div><p>/opt/project/tke/pkg/auth/authorization/aggregation/aggregation.go</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#ae81ff">// NewAuthorizer creates a authorizer for subject access review and returns it.</span>
+<span style="color:#ae81ff">func NewAuthorizer(authClient authinternalclient.AuthInterface, authorizationOpts *options.AuthorizationOptions, authOpts *options.AuthOptions, enforcer *casbin.SyncedEnforcer, privilegedUsername string) (authorizer.Authorizer, error) {</span>
+	<span style="color:#ae81ff">var (</span>
+		<span style="color:#ae81ff">authorizers []authorizer.Authorizer</span>
+	<span style="color:#ae81ff">)</span>
+
+	<span style="color:#ae81ff">if len(authorizationOpts.WebhookConfigFile) != 0 {</span>
+		<span style="color:#ae81ff">webhookAuthorizer, err := webhook.New(authorizationOpts.WebhookConfigFile,</span>
+			<span style="color:#ae81ff">authorizationOpts.WebhookVersion,</span>
+			<span style="color:#ae81ff">authorizationOpts.WebhookCacheAuthorizedTTL,</span>
+			<span style="color:#ae81ff">authorizationOpts.WebhookCacheUnauthorizedTTL, nil)</span>
+		<span style="color:#ae81ff">if err != nil {</span>
+			<span style="color:#ae81ff">return nil, err</span>
+		}
+
+		<span style="color:#ae81ff">authorizers = append(authorizers, webhookAuthorizer)</span>
+	}
+
+	<span style="color:#ae81ff">if len(authorizationOpts.PolicyFile) != 0 {</span>
+		<span style="color:#ae81ff">abacAuthorizer, err := abac.NewABACAuthorizer(authorizationOpts.PolicyFile)</span>
+		<span style="color:#ae81ff">if err != nil {</span>
+			<span style="color:#ae81ff">return nil, err</span>
+		}
+		<span style="color:#ae81ff">authorizers = append(authorizers, abacAuthorizer)</span>
+	}
+
+	<span style="color:#ae81ff">authorizers = append(authorizers, local.NewAuthorizer(authClient, enforcer, privilegedUsername))</span>
+
+	<span style="color:#ae81ff">return union.New(authorizers...), nil</span>
+}
+
+</code></pre></div><p>可以看到最终的authrizer配置由webhook（如果有）、abac（如果有）和local组成。auth-api的配置文件：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml">  <span style="color:#a6e22e">tke</span><span style="color:#960050;background-color:#1e0010">-</span><span style="color:#a6e22e">auth</span><span style="color:#960050;background-color:#1e0010">-</span><span style="color:#a6e22e">api</span>.<span style="color:#a6e22e">toml</span><span style="color:#960050;background-color:#1e0010">:</span> <span style="color:#960050;background-color:#1e0010">|</span>
+    ........
+    [<span style="color:#a6e22e">authorization</span>]
+    <span style="color:#a6e22e">policy_file</span>=<span style="color:#e6db74">&#34;/app/conf/abac-policy.json&#34;</span>
+</code></pre></div><p>继续查看abac-policy.json</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">{<span style="color:#f92672">&#34;apiVersion&#34;:&#34;abac.authorization.kubernetes.io/v1beta1&#34;,&#34;kind&#34;:&#34;Policy&#34;,&#34;spec&#34;:{&#34;user&#34;:&#34;system:*&#34;,&#34;namespace&#34;:&#34;*&#34;, &#34;resource&#34;:&#34;*&#34;,&#34;apiGroup&#34;:&#34;*&#34;, &#34;group&#34;: </span><span style="color:#e6db74">&#34;*&#34;</span>, <span style="color:#e6db74">&#34;nonResourcePath&#34;</span>:<span style="color:#e6db74">&#34;*&#34;</span>}}
+</code></pre></div><p>该文件将配置任意<code>system:*</code>配置拥有任意<code>namespace</code>下的所有资源。</p>
+<p>至此，问题原因已经找到了。但问什么TKEStack中如此配置ABAC？这将导致一个明显的漏洞出现。带着问题，我们继续查看github上的修改提交记录：</p>
+<ul>
+<li><a href="https://github.com/tkestack/tke/pull/1155">1155</a>
+但是没有找到任何相关说明为何要如此修改，我将对此issue进行一个comment，希望作者能有相关解释。</li>
+</ul>
+
+
+
+      
+        <div class="blog-tags">
+          
+            <a
+              href="https://xiaosuiba.github.io/tags/kubernetes/"
+              >kubernetes</a
+            >&nbsp;
+          
+            <a
+              href="https://xiaosuiba.github.io/tags/tkestack/"
+              >TKEStack</a
+            >&nbsp;
+          
+            <a
+              href="https://xiaosuiba.github.io/tags/code/"
+              >code</a
+            >&nbsp;
+          
+        </div>
+      
+    </article>
+    
+    
+      
+
+    
+  </div>
+
+    <footer>
+  
+
+<div class="social-icons">
+  
+    
+    
+      
+      <a href="https://twitter.com/xiaosuiba" name="Twitter">
+        <em class="fab fa-twitter"></em>
+      </a>
+    
+       &nbsp;&ndash;&nbsp;
+      <a href="https://github.com/xiaosuiba" name="GitHub">
+        <em class="fab fa-github"></em>
+      </a>
+    
+  
+
+  
+</div>
+
+
+  
+  <div class="container">
+    <p class="credits copyright">
+      <a href="https://xiaosuiba.github.io/about">Chris Li</a>
+      &nbsp;&copy;
+      2021
+      
+        &nbsp;/&nbsp;
+        <a href="https://xiaosuiba.github.io/">ChrisLi&#39;s Blog</a>
+      
+      &nbsp;&ndash;&nbsp;
+      <em class="fas fa-moon" id="dark-mode-toggle"></em>
+    </p>
+
+    <p class="credits theme-by">
+      Powered By <a href="https://gohugo.io">Hugo</a>&nbsp;
+      Theme
+      <a href="https://github.com/matsuyoshi30/harbor">Harbor</a>
+    </p>
+  </div>
+</footer>
+
+  </body>
+</html>
