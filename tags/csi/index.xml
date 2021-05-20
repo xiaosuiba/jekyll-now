@@ -1,17 +1,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
 	<channel>
-		<title>TKEStack on ChrisLi&#39;s Blog</title>
-		<link>https://xiaosuiba.github.io/tags/tkestack/</link>
-		<description>Recent content in TKEStack </description>
+		<title>CSI on ChrisLi&#39;s Blog</title>
+		<link>https://xiaosuiba.github.io/tags/csi/</link>
+		<description>Recent content in CSI </description>
 		<generator>Hugo -- gohugo.io</generator>
 		
   		<language>zh-cn</language>
 		
-		<managingEditor>Page(/tags/tkestack) (Chris Li)</managingEditor>
+		<managingEditor>Page(/tags/csi) (Chris Li)</managingEditor>
     	
-  		<lastBuildDate>Mon, 10 May 2021 00:00:00 +0000</lastBuildDate>
+  		<lastBuildDate>Fri, 14 May 2021 00:00:00 +0000</lastBuildDate>
 		
-		<atom:link href="/tags/tkestack/" rel="self" type="application/rss+xml" />
+		<atom:link href="/tags/csi/" rel="self" type="application/rss+xml" />
 		
 		<item>
 			<title>Kubernet CSI Volume 插件设计文档(译)</title>

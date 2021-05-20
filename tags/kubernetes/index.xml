@@ -9,10 +9,18 @@
 		
 		<managingEditor>Page(/tags/kubernetes) (Chris Li)</managingEditor>
     	
-  		<lastBuildDate>Mon, 10 May 2021 00:00:00 +0000</lastBuildDate>
+  		<lastBuildDate>Fri, 14 May 2021 00:00:00 +0000</lastBuildDate>
 		
 		<atom:link href="/tags/kubernetes/" rel="self" type="application/rss+xml" />
 		
+		<item>
+			<title>Kubernet CSI Volume 插件设计文档(译)</title>
+			<link>https://xiaosuiba.github.io/2021/05/14/container-storage-interface/</link>
+			<pubDate>Fri, 14 May 2021 00:00:00 +0000</pubDate>
+			<guid>https://xiaosuiba.github.io/2021/05/14/container-storage-interface/</guid>
+			<description>&lt;p&gt;本文是对&lt;a href=&#34;https://github.com/kubernetes/community/blob/master/contributors/design-proposals/storage/container-storage-interface.md&#34;&gt;CSI Volume Plugins in Kubernetes Design Doc&lt;/a&gt;的翻译&lt;/p&gt;</description>
+		</item>
+      	
 		<item>
 			<title>TKEStack中LocalIdentity如何利用generateName机制生成Name</title>
 			<link>https://xiaosuiba.github.io/2021/05/10/2021-05-10-how-does-tkestack-localidentity-make-use-of-generatename/</link>
