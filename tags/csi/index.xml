@@ -14,6 +14,14 @@
 		<atom:link href="/tags/csi/" rel="self" type="application/rss+xml" />
 		
 		<item>
+			<title>kube-public命名空间工作原理</title>
+			<link>https://xiaosuiba.github.io/2021/06/02/how-does-kube-public-works/</link>
+			<pubDate>Wed, 02 Jun 2021 00:00:00 +0000</pubDate>
+			<guid>https://xiaosuiba.github.io/2021/06/02/how-does-kube-public-works/</guid>
+			<description>&lt;p&gt;kube-public中的资源可以被所有用户读取，本文探索了其实现方式和当前的现状。&lt;/p&gt;</description>
+		</item>
+      	
+		<item>
 			<title>Kubernet CSI Volume 插件设计文档(译)</title>
 			<link>https://xiaosuiba.github.io/2021/05/14/container-storage-interface/</link>
 			<pubDate>Fri, 14 May 2021 00:00:00 +0000</pubDate>

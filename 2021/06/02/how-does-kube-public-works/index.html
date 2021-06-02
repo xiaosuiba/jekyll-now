@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    <meta charset="utf-8" />
+<title>kube-public命名空间工作原理</title>
+
+
+  
+
+
+
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link
+  rel="alternate"
+  type="application/rss+xml"
+  href="https://xiaosuiba.github.io/index.xml"
+  title="ChrisLi&#39;s Blog"
+/>
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="kube-public命名空间工作原理"/>
+<meta name="twitter:description" content="kube-public中的资源可以被所有用户读取，本文探索了其实现方式和当前的现状。"/>
+
+
+
+<link rel="stylesheet" href="https://xiaosuiba.github.io/fontawesome/css/all.min.css" />
+
+<link
+  id="dark-mode-theme"
+  rel="stylesheet"
+  href="https://xiaosuiba.github.io/css/dark.css"
+/>
+
+<script>
+  var darkTheme = document.getElementById('dark-mode-theme')
+  var storedTheme = localStorage.getItem('dark-mode-storage')
+  if (storedTheme === 'dark') {
+    darkTheme.disabled = false
+  } else if (storedTheme === 'light') {
+    darkTheme.disabled = true
+  }
+</script>
+
+<script src="https://xiaosuiba.github.io/js/main.bundle.js"></script>
+<script src="https://xiaosuiba.github.io/js/instantpage.min.js" type="module" defer></script>
+<meta name="generator" content="Hugo 0.83.1" />
+  </head>
+  <body>
+    
+  
+
+
+
+
+  <header>
+    <nav class="navbar">
+  <div class="nav">
+    
+      <a href="https://xiaosuiba.github.io/" class="nav-logo">
+        <img
+          src="https://xiaosuiba.github.io/images/icon.png"
+          width="50"
+          height="50"
+          alt="Logo"
+        />
+      </a>
+    
+
+    <ul class="nav-links">
+      
+        
+          <li>
+            <a href="/about/" id="About"
+              ><em class="fas fa-user fa-lg"></em
+            ></a>
+          </li>
+          
+      
+        
+          <li>
+            <a href="/tags/" id="Tags"
+              ><em class="fas fa-tag fa-lg"></em
+            ></a>
+          </li>
+          
+      
+        
+          <li>
+            <a href="/search/" id="Search"
+              ><em class="fas fa-search fa-lg"></em
+            ></a>
+          </li>
+          
+      
+    </ul>
+  </div>
+</nav>
+
+    <div class="intro-header">
+      <div class="container">
+        <div class="post-heading">
+          
+            <h1>
+              kube-public命名空间工作原理
+            </h1>
+          
+          
+            <span class="meta-post">
+  <em class="fa fa-calendar-alt"></em
+  >&nbsp;Jun 2, 2021
+  
+    &nbsp;&nbsp;&nbsp;<em class="fa fa-folder-open"></em>&nbsp;
+    
+      <a
+        href="https://xiaosuiba.github.io/categories/tech/"
+        >Tech</a
+      >&nbsp;
+    
+  
+</span>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+  
+
+    
+  <div class="container" role="main">
+    <article class="article" class="blog-post">
+      
+  <p>kube-public中的资源可以被所有用户读取，本文探索了其实现方式和当前的现状。</p>
+<h1 id="kube-public命名空间工作原理">kube-public命名空间工作原理</h1>
+<p>在开发中，我们使用到了<code>kube-public</code>命名空间中的<code>cluster-info</code> configmap。按照官方文档的说法，<code>kube-public</code>是任何用户（包括未认证用户）都可以访问的，<a href="https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/">官网的说明</a>如下：</p>
+<blockquote>
+<p><code>kube-public</code> This namespace is created automatically and is readable by all users (including those not authenticated). This namespace is mostly reserved for cluster usage, in case that some resources should be visible and readable publicly throughout the whole cluster. The public aspect of this namespace is only a convention, not a requirement.</p>
+</blockquote>
+<p>而我们在实际测试当中，却发现使用<code>kubeadm</code>创建的集群中，匿名用户仅能实现对<code>kube-public</code>中<code>cluster-info</code>对象的<code>get</code>操作，而对该命名空间的其余动作或者操作其余资源均会返回<code>403Forbidden</code>，这显然与官网文档说法有出入。那么<code>kube-public</code>命名空间到底怎么实现的呢？我们进行了一番探索。</p>
+<p>首先，从kubernetes源码当中，进行一番搜索，找到两处可疑的代码：
+plugin/pkg/auth/authorizer/rbac/bootstrappolicy/namespace_policy.go#L140</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-golang" data-lang="golang"><span style="color:#a6e22e">addNamespaceRole</span>(<span style="color:#a6e22e">metav1</span>.<span style="color:#a6e22e">NamespacePublic</span>, <span style="color:#a6e22e">rbacv1</span>.<span style="color:#a6e22e">Role</span>{
+		<span style="color:#75715e">// role for the bootstrap signer to be able to write its configmap
+</span><span style="color:#75715e"></span>		<span style="color:#a6e22e">ObjectMeta</span>: <span style="color:#a6e22e">metav1</span>.<span style="color:#a6e22e">ObjectMeta</span>{<span style="color:#a6e22e">Name</span>: <span style="color:#a6e22e">saRolePrefix</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;bootstrap-signer&#34;</span>},
+		<span style="color:#a6e22e">Rules</span>: []<span style="color:#a6e22e">rbacv1</span>.<span style="color:#a6e22e">PolicyRule</span>{
+			<span style="color:#a6e22e">rbacv1helpers</span>.<span style="color:#a6e22e">NewRule</span>(<span style="color:#e6db74">&#34;get&#34;</span>, <span style="color:#e6db74">&#34;list&#34;</span>, <span style="color:#e6db74">&#34;watch&#34;</span>).<span style="color:#a6e22e">Groups</span>(<span style="color:#a6e22e">legacyGroup</span>).<span style="color:#a6e22e">Resources</span>(<span style="color:#e6db74">&#34;configmaps&#34;</span>).<span style="color:#a6e22e">RuleOrDie</span>(),
+			<span style="color:#a6e22e">rbacv1helpers</span>.<span style="color:#a6e22e">NewRule</span>(<span style="color:#e6db74">&#34;update&#34;</span>).<span style="color:#a6e22e">Groups</span>(<span style="color:#a6e22e">legacyGroup</span>).<span style="color:#a6e22e">Resources</span>(<span style="color:#e6db74">&#34;configmaps&#34;</span>).<span style="color:#a6e22e">Names</span>(<span style="color:#e6db74">&#34;cluster-info&#34;</span>).<span style="color:#a6e22e">RuleOrDie</span>(),
+			<span style="color:#a6e22e">eventsRule</span>(),
+		},
+	})
+	<span style="color:#a6e22e">addNamespaceRoleBinding</span>(<span style="color:#a6e22e">metav1</span>.<span style="color:#a6e22e">NamespacePublic</span>,
+		<span style="color:#a6e22e">rbacv1helpers</span>.<span style="color:#a6e22e">NewRoleBinding</span>(<span style="color:#a6e22e">saRolePrefix</span><span style="color:#f92672">+</span><span style="color:#e6db74">&#34;bootstrap-signer&#34;</span>, <span style="color:#a6e22e">metav1</span>.<span style="color:#a6e22e">NamespacePublic</span>).<span style="color:#a6e22e">SAs</span>(<span style="color:#a6e22e">metav1</span>.<span style="color:#a6e22e">NamespaceSystem</span>, <span style="color:#e6db74">&#34;bootstrap-signer&#34;</span>).<span style="color:#a6e22e">BindingOrDie</span>())
+</code></pre></div><p>此处创建了一个角色<code>saRolePrefix + &quot;bootstrap-signer&quot;</code>，并和名为<code>bootstrap-signer</code>的<code>sa</code>进行绑定。看起来和匿名访问关系不大。</p>
+<p>cmd/kubeadm/app/phases/bootstraptoken/clusterinfo/clusterinfo.go#L85</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-golang" data-lang="golang"><span style="color:#75715e">// CreateClusterInfoRBACRules creates the RBAC rules for exposing the cluster-info ConfigMap in the kube-public namespace to unauthenticated users
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">CreateClusterInfoRBACRules</span>(<span style="color:#a6e22e">client</span> <span style="color:#a6e22e">clientset</span>.<span style="color:#a6e22e">Interface</span>) <span style="color:#66d9ef">error</span> {
+	<span style="color:#a6e22e">klog</span>.<span style="color:#a6e22e">V</span>(<span style="color:#ae81ff">1</span>).<span style="color:#a6e22e">Infoln</span>(<span style="color:#e6db74">&#34;creating the RBAC rules for exposing the cluster-info ConfigMap in the kube-public namespace&#34;</span>)
+	<span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">apiclient</span>.<span style="color:#a6e22e">CreateOrUpdateRole</span>(<span style="color:#a6e22e">client</span>, <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">rbac</span>.<span style="color:#a6e22e">Role</span>{
+		<span style="color:#a6e22e">ObjectMeta</span>: <span style="color:#a6e22e">metav1</span>.<span style="color:#a6e22e">ObjectMeta</span>{
+			<span style="color:#a6e22e">Name</span>:      <span style="color:#a6e22e">BootstrapSignerClusterRoleName</span>,
+			<span style="color:#a6e22e">Namespace</span>: <span style="color:#a6e22e">metav1</span>.<span style="color:#a6e22e">NamespacePublic</span>,
+		},
+		<span style="color:#a6e22e">Rules</span>: []<span style="color:#a6e22e">rbac</span>.<span style="color:#a6e22e">PolicyRule</span>{
+			{
+				<span style="color:#a6e22e">Verbs</span>:         []<span style="color:#66d9ef">string</span>{<span style="color:#e6db74">&#34;get&#34;</span>},
+				<span style="color:#a6e22e">APIGroups</span>:     []<span style="color:#66d9ef">string</span>{<span style="color:#e6db74">&#34;&#34;</span>},
+				<span style="color:#a6e22e">Resources</span>:     []<span style="color:#66d9ef">string</span>{<span style="color:#e6db74">&#34;configmaps&#34;</span>},
+				<span style="color:#a6e22e">ResourceNames</span>: []<span style="color:#66d9ef">string</span>{<span style="color:#a6e22e">bootstrapapi</span>.<span style="color:#a6e22e">ConfigMapClusterInfo</span>},
+			},
+		},
+	})
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">err</span>
+	}
+
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">apiclient</span>.<span style="color:#a6e22e">CreateOrUpdateRoleBinding</span>(<span style="color:#a6e22e">client</span>, <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">rbac</span>.<span style="color:#a6e22e">RoleBinding</span>{
+		<span style="color:#a6e22e">ObjectMeta</span>: <span style="color:#a6e22e">metav1</span>.<span style="color:#a6e22e">ObjectMeta</span>{
+			<span style="color:#a6e22e">Name</span>:      <span style="color:#a6e22e">BootstrapSignerClusterRoleName</span>,
+			<span style="color:#a6e22e">Namespace</span>: <span style="color:#a6e22e">metav1</span>.<span style="color:#a6e22e">NamespacePublic</span>,
+		},
+		<span style="color:#a6e22e">RoleRef</span>: <span style="color:#a6e22e">rbac</span>.<span style="color:#a6e22e">RoleRef</span>{
+			<span style="color:#a6e22e">APIGroup</span>: <span style="color:#a6e22e">rbac</span>.<span style="color:#a6e22e">GroupName</span>,
+			<span style="color:#a6e22e">Kind</span>:     <span style="color:#e6db74">&#34;Role&#34;</span>,
+			<span style="color:#a6e22e">Name</span>:     <span style="color:#a6e22e">BootstrapSignerClusterRoleName</span>,
+		},
+		<span style="color:#a6e22e">Subjects</span>: []<span style="color:#a6e22e">rbac</span>.<span style="color:#a6e22e">Subject</span>{
+			{
+				<span style="color:#a6e22e">Kind</span>: <span style="color:#a6e22e">rbac</span>.<span style="color:#a6e22e">UserKind</span>,
+				<span style="color:#a6e22e">Name</span>: <span style="color:#a6e22e">user</span>.<span style="color:#a6e22e">Anonymous</span>,
+			},
+		},
+	})
+}
+</code></pre></div><p>这段代码首先创建了名为<code>BootstrapSignerClusterRoleName</code>也就是<code>kubeadm:bootstrap-signer-clusterinfo</code>的角色，该角色对<code>kube-public</code>中的<code>cluster-info</code> configmap具有<code>get</code>权限。然后创建了一个绑定，将上面的角色与<code>user.Anonymous</code>绑定起来，这样实现任意用户对<code>cluster-info</code>的<code>get</code>操作授权。同时也说明了为什么未授权用户不能读取其余自定义的资源。</p>
+<p>一切都没有魔法，只是<code>kubeadm</code>初始化集群时进行了权限配置。再次看一遍官方的文档，其中有一句：<code>is only a convention</code>。这仅仅是一个约定，系统不会帮你实现这个约定，而是需要用户自己遵守并实现。</p>
+
+
+
+      
+        <div class="blog-tags">
+          
+            <a
+              href="https://xiaosuiba.github.io/tags/kubernetes/"
+              >kubernetes</a
+            >&nbsp;
+          
+            <a
+              href="https://xiaosuiba.github.io/tags/kube-public/"
+              >kube-public</a
+            >&nbsp;
+          
+            <a
+              href="https://xiaosuiba.github.io/tags/code/"
+              >code</a
+            >&nbsp;
+          
+        </div>
+      
+    </article>
+    
+    
+      
+
+    
+  </div>
+
+    <footer>
+  
+
+<div class="social-icons">
+  
+    
+    
+      
+      <a href="https://twitter.com/xiaosuiba" name="Twitter">
+        <em class="fab fa-twitter"></em>
+      </a>
+    
+       &nbsp;&ndash;&nbsp;
+      <a href="https://github.com/xiaosuiba" name="GitHub">
+        <em class="fab fa-github"></em>
+      </a>
+    
+  
+
+  
+</div>
+
+
+  
+  <div class="container">
+    <p class="credits copyright">
+      <a href="https://xiaosuiba.github.io/about">Chris Li</a>
+      &nbsp;&copy;
+      2021
+      
+        &nbsp;/&nbsp;
+        <a href="https://xiaosuiba.github.io/">ChrisLi&#39;s Blog</a>
+      
+      &nbsp;&ndash;&nbsp;
+      <em class="fas fa-moon" id="dark-mode-toggle"></em>
+    </p>
+
+    <p class="credits theme-by">
+      Powered By <a href="https://gohugo.io">Hugo</a>&nbsp;
+      Theme
+      <a href="https://github.com/matsuyoshi30/harbor">Harbor</a>
+    </p>
+  </div>
+</footer>
+
+  </body>
+</html>

@@ -1,17 +1,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
 	<channel>
-		<title>Tags on ChrisLi&#39;s Blog</title>
-		<link>https://xiaosuiba.github.io/tags/</link>
-		<description>Recent content in Tags </description>
+		<title>kube-public on ChrisLi&#39;s Blog</title>
+		<link>https://xiaosuiba.github.io/tags/kube-public/</link>
+		<description>Recent content in kube-public </description>
 		<generator>Hugo -- gohugo.io</generator>
 		
   		<language>zh-cn</language>
 		
-		<managingEditor>Page(/tags) (Chris Li)</managingEditor>
+		<managingEditor>Page(/tags/kube-public) (Chris Li)</managingEditor>
     	
   		<lastBuildDate>Wed, 02 Jun 2021 00:00:00 +0000</lastBuildDate>
 		
-		<atom:link href="/tags/" rel="self" type="application/rss+xml" />
+		<atom:link href="/tags/kube-public/" rel="self" type="application/rss+xml" />
 		
 		<item>
 			<title>kube-public命名空间工作原理</title>
