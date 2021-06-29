@@ -14,7 +14,7 @@
 		<atom:link href="/tags/code/" rel="self" type="application/rss+xml" />
 		
 		<item>
-			<title>延长kubeadm集群证书</title>
+			<title>延长kubeadm集群证书有效期</title>
 			<link>https://xiaosuiba.github.io/2021/06/29/how-to-custom-kubeadm-to-extend-certs-duration/</link>
 			<pubDate>Tue, 29 Jun 2021 00:00:00 +0000</pubDate>
 			<guid>https://xiaosuiba.github.io/2021/06/29/how-to-custom-kubeadm-to-extend-certs-duration/</guid>

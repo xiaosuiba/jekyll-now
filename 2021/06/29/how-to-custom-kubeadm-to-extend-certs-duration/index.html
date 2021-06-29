@@ -2,7 +2,7 @@
 <html lang="zh-cn">
   <head>
     <meta charset="utf-8" />
-<title>延长kubeadm集群证书</title>
+<title>延长kubeadm集群证书有效期</title>
 
 
   
@@ -20,7 +20,7 @@
   title="ChrisLi&#39;s Blog"
 />
 <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="延长kubeadm集群证书"/>
+<meta name="twitter:title" content="延长kubeadm集群证书有效期"/>
 <meta name="twitter:description" content="使用kubeadm创建集群时，服务证书和kubelet均会在1年过期。本文介绍了一种修改kubeadm来延长各种证书有效期的方式。"/>
 
 
@@ -103,7 +103,7 @@
         <div class="post-heading">
           
             <h1>
-              延长kubeadm集群证书
+              延长kubeadm集群证书有效期
             </h1>
           
           
@@ -133,7 +133,7 @@
     <article class="article" class="blog-post">
       
   <p>使用kubeadm创建集群时，服务证书和kubelet均会在1年过期。本文介绍了一种修改kubeadm来延长各种证书有效期的方式。</p>
-<h1 id="延长kubeadm集群证书">延长kubeadm集群证书</h1>
+<h1 id="延长kubeadm集群证书有效期">延长kubeadm集群证书有效期</h1>
 <h2 id="0-默认证书有效期">0. 默认证书有效期</h2>
 <p>最近公司的一个产品出了线上问题，由于使用了默认的kubeadm创建集群，集群的CA证书有10年有效期，但其余证书（包括服务证书和kubelet证书）通常只有1年有效期，到期之后需要通过kubeadm升级，或者手动执行kubeadm renew的方式来<a href="https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/kubeadm-certs/">续签证书</a>。否则集群将有停止服务的风险。</p>
 <p>官方如此设计kubeadm，一是出于安全原因，另外是希望用户能够及时升级。每次使用kubeadm升级时，会自动更新证书有效期。但作为服务提供商，我们不能控制或强制用户升级，直接给100年有效期是最稳妥的做法。</p>
