@@ -1,17 +1,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
 	<channel>
-		<title>code on ChrisLi&#39;s Blog</title>
-		<link>https://xiaosuiba.github.io/tags/code/</link>
-		<description>Recent content in code </description>
+		<title>certificate on ChrisLi&#39;s Blog</title>
+		<link>https://xiaosuiba.github.io/tags/certificate/</link>
+		<description>Recent content in certificate </description>
 		<generator>Hugo -- gohugo.io</generator>
 		
   		<language>zh-cn</language>
 		
-		<managingEditor>Page(/tags/code) (Chris Li)</managingEditor>
+		<managingEditor>Page(/tags/certificate) (Chris Li)</managingEditor>
     	
   		<lastBuildDate>Tue, 29 Jun 2021 00:00:00 +0000</lastBuildDate>
 		
-		<atom:link href="/tags/code/" rel="self" type="application/rss+xml" />
+		<atom:link href="/tags/certificate/" rel="self" type="application/rss+xml" />
 		
 		<item>
 			<title>延长kubeadm集群证书</title>

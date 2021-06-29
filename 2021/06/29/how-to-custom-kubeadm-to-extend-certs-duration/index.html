@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    <meta charset="utf-8" />
+<title>延长kubeadm集群证书</title>
+
+
+  
+
+
+
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="google-site-verification" content="C2dkRjoGR3ZnDh_l8AW8HndS8hPBIVt0DQggtQbhElk" />
+<link
+  rel="alternate"
+  type="application/rss+xml"
+  href="https://xiaosuiba.github.io/index.xml"
+  title="ChrisLi&#39;s Blog"
+/>
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="延长kubeadm集群证书"/>
+<meta name="twitter:description" content="使用kubeadm创建集群时，服务证书和kubelet均会在1年过期。本文介绍了一种修改kubeadm来延长各种证书有效期的方式。"/>
+
+
+
+<link rel="stylesheet" href="https://xiaosuiba.github.io/fontawesome/css/all.min.css" />
+
+<link
+  id="dark-mode-theme"
+  rel="stylesheet"
+  href="https://xiaosuiba.github.io/css/dark.css"
+/>
+
+<script>
+  var darkTheme = document.getElementById('dark-mode-theme')
+  var storedTheme = localStorage.getItem('dark-mode-storage')
+  if (storedTheme === 'dark') {
+    darkTheme.disabled = false
+  } else if (storedTheme === 'light') {
+    darkTheme.disabled = true
+  }
+</script>
+
+<script src="https://xiaosuiba.github.io/js/main.bundle.js"></script>
+<script src="https://xiaosuiba.github.io/js/instantpage.min.js" type="module" defer></script>
+<meta name="generator" content="Hugo 0.83.1" />
+  </head>
+  <body>
+    
+  
+
+
+
+
+  <header>
+    <nav class="navbar">
+  <div class="nav">
+    
+      <a href="https://xiaosuiba.github.io/" class="nav-logo">
+        <img
+          src="https://xiaosuiba.github.io/images/icon.png"
+          width="50"
+          height="50"
+          alt="Logo"
+        />
+      </a>
+    
+
+    <ul class="nav-links">
+      
+        
+          <li>
+            <a href="/about/" id="About"
+              ><em class="fas fa-user fa-lg"></em
+            ></a>
+          </li>
+          
+      
+        
+          <li>
+            <a href="/tags/" id="Tags"
+              ><em class="fas fa-tag fa-lg"></em
+            ></a>
+          </li>
+          
+      
+        
+          <li>
+            <a href="/search/" id="Search"
+              ><em class="fas fa-search fa-lg"></em
+            ></a>
+          </li>
+          
+      
+    </ul>
+  </div>
+</nav>
+
+    <div class="intro-header">
+      <div class="container">
+        <div class="post-heading">
+          
+            <h1>
+              延长kubeadm集群证书
+            </h1>
+          
+          
+            <span class="meta-post">
+  <em class="fa fa-calendar-alt"></em
+  >&nbsp;Jun 29, 2021
+  
+    &nbsp;&nbsp;&nbsp;<em class="fa fa-folder-open"></em>&nbsp;
+    
+      <a
+        href="https://xiaosuiba.github.io/categories/tech/"
+        >Tech</a
+      >&nbsp;
+    
+  
+</span>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+  
+
+    
+  <div class="container" role="main">
+    <article class="article" class="blog-post">
+      
+  <p>使用kubeadm创建集群时，服务证书和kubelet均会在1年过期。本文介绍了一种修改kubeadm来延长各种证书有效期的方式。</p>
+<h1 id="延长kubeadm集群证书">延长kubeadm集群证书</h1>
+<h2 id="0-默认证书有效期">0. 默认证书有效期</h2>
+<p>最近公司的一个产品出了线上问题，由于使用了默认的kubeadm创建集群，集群的CA证书有10年有效期，但其余证书（包括服务证书和kubelet证书）通常只有1年有效期，到期之后需要通过kubeadm升级，或者手动执行kubeadm renew的方式来<a href="https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/kubeadm-certs/">续签证书</a>。否则集群将有停止服务的风险。</p>
+<p>官方如此设计kubeadm，一是出于安全原因，另外是希望用户能够及时升级。每次使用kubeadm升级时，会自动更新证书有效期。但作为服务提供商，我们不能控制或强制用户升级，直接给100年有效期是最稳妥的做法。</p>
+<p>使用<code>kubeadm certs check-expiration</code>(1.20以前需要使用<code>kubeadm alpha certs check-expiration</code>)查看证书如下：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#f92672">[</span>root@localhost kubernetes<span style="color:#f92672">]</span><span style="color:#75715e"># kubeadm certs check-expiration</span>
+<span style="color:#f92672">[</span>check-expiration<span style="color:#f92672">]</span> Reading configuration from the cluster...
+<span style="color:#f92672">[</span>check-expiration<span style="color:#f92672">]</span> FYI: You can look at this config file with <span style="color:#e6db74">&#39;kubectl -n kube-system get cm kubeadm-config -o yaml&#39;</span>
+
+CERTIFICATE                EXPIRES                  RESIDUAL TIME   CERTIFICATE AUTHORITY   EXTERNALLY MANAGED
+admin.conf                 Jun 09, <span style="color:#ae81ff">2022</span> 09:36 UTC   345d                                    no
+apiserver                  Jun 09, <span style="color:#ae81ff">2022</span> 09:36 UTC   345d            ca                      no
+apiserver-etcd-client      Jun 09, <span style="color:#ae81ff">2022</span> 09:36 UTC   345d            etcd-ca                 no
+apiserver-kubelet-client   Jun 09, <span style="color:#ae81ff">2022</span> 09:36 UTC   345d            ca                      no
+controller-manager.conf    Jun 09, <span style="color:#ae81ff">2022</span> 09:36 UTC   345d                                    no
+etcd-healthcheck-client    Jun 09, <span style="color:#ae81ff">2022</span> 09:36 UTC   345d            etcd-ca                 no
+etcd-peer                  Jun 09, <span style="color:#ae81ff">2022</span> 09:36 UTC   345d            etcd-ca                 no
+etcd-server                Jun 09, <span style="color:#ae81ff">2022</span> 09:36 UTC   345d            etcd-ca                 no
+front-proxy-client         Jun 09, <span style="color:#ae81ff">2022</span> 09:36 UTC   345d            front-proxy-ca          no
+scheduler.conf             Jun 09, <span style="color:#ae81ff">2022</span> 09:36 UTC   345d                                    no
+
+CERTIFICATE AUTHORITY   EXPIRES                  RESIDUAL TIME   EXTERNALLY MANAGED
+ca                      Jun 07, <span style="color:#ae81ff">2031</span> 09:36 UTC   9y              no
+etcd-ca                 Jun 07, <span style="color:#ae81ff">2031</span> 09:36 UTC   9y              no
+front-proxy-ca          Jun 07, <span style="color:#ae81ff">2031</span> 09:36 UTC   9y              no
+</code></pre></div><p>可以看到CA证书有效期为10年，服务证书为1年（由于已经创建一段时间，有效期是向下取整的）。</p>
+<p><code>fanux</code>同学已经总结了一篇修改kubeadm延长证书的文章：<a href="https://blog.csdn.net/github_35614077/article/details/98748768">kubeadm定制化开发，延长证书</a>，但按这篇文章修改之后，我发现几个问题：</p>
+<ol>
+<li>修改之后的kubeadm仅延长了CA证书，对服务证书并没有作用</li>
+<li>没有考虑使用bootstrap方式的kubelet client证书有效期</li>
+</ol>
+<p>经过一番探索，在fanux基础上我们成功的实现了全集群的证书有效期延长，具体步骤如下：</p>
+<ol>
+<li>修改CA有效期，这是<code>fanux</code>文章中提到过的</li>
+<li>修改服务证书有效期</li>
+<li>配置kube-controller-manager，为kubelet颁发99年有效期证书</li>
+</ol>
+<h2 id="1-修改ca有效期">1. 修改CA有效期</h2>
+<p>修改<code>vendor/k8s.io/client-go/util/cert/cert.go</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-diff" data-lang="diff">diff --git a/staging/src/k8s.io/client-go/util/cert/cert.go b/staging/src/k8s.io/client-go/util/cert/cert.go
+index 3da1441..37f5823 100644
+<span style="color:#f92672">--- a/staging/src/k8s.io/client-go/util/cert/cert.go
+</span><span style="color:#f92672"></span><span style="color:#a6e22e">+++ b/staging/src/k8s.io/client-go/util/cert/cert.go
+</span><span style="color:#a6e22e"></span><span style="color:#75715e">@@ -36,6 +36,7 @@ import (
+</span><span style="color:#75715e"></span> )
+ 
+ const duration365d = time.Hour * 24 * 365
+<span style="color:#a6e22e">+const longYear = 100
+</span><span style="color:#a6e22e"></span> 
+ // Config contains the basic fields required for creating a certificate
+ type Config struct {
+<span style="color:#75715e">@@ -63,7 +64,7 @@ func NewSelfSignedCACert(cfg Config, key crypto.Signer) (*x509.Certificate, erro
+</span><span style="color:#75715e"></span>                        Organization: cfg.Organization,
+                },
+                NotBefore:             now.UTC(),
+<span style="color:#f92672">-               NotAfter:              now.Add(duration365d * 10).UTC(),
+</span><span style="color:#f92672"></span><span style="color:#a6e22e">+               NotAfter:              now.Add(duration365d * longYear).UTC(),
+</span><span style="color:#a6e22e"></span>                KeyUsage:              x509.KeyUsageKeyEncipherment | x509.KeyUsageDigitalSignature | x509.KeyUsageCertSign,
+                BasicConstraintsValid: true,
+                IsCA:                  true,
+<span style="color:#75715e">@@ -93,7 +94,7 @@ func GenerateSelfSignedCertKey(host string, alternateIPs []net.IP, alternateDNS
+</span><span style="color:#75715e"></span> // Certs/keys not existing in that directory are created.
+ func GenerateSelfSignedCertKeyWithFixtures(host string, alternateIPs []net.IP, alternateDNS []string, fixtureDirectory string) ([]byte, []byte, error) {
+        validFrom := time.Now().Add(-time.Hour) // valid an hour earlier to avoid flakes due to clock skew
+<span style="color:#f92672">-       maxAge := time.Hour * 24 * 365          // one year self-signed certs
+</span><span style="color:#f92672"></span><span style="color:#a6e22e">+       maxAge := duration365d * longYear       // one year self-signed certs
+</span><span style="color:#a6e22e"></span> 
+        baseName := fmt.Sprintf(&#34;%s_%s_%s&#34;, host, strings.Join(ipsToStrings(alternateIPs), &#34;-&#34;), strings.Join(alternateDNS, &#34;-&#34;))
+        certFixturePath := filepath.Join(fixtureDirectory, baseName+&#34;.crt&#34;)
+<span style="color:#75715e">@@ -107,7 +108,7 @@ func GenerateSelfSignedCertKeyWithFixtures(host string, alternateIPs []net.IP, a
+</span><span style="color:#75715e"></span>                        }
+                        return nil, nil, fmt.Errorf(&#34;cert %s can be read, but key %s cannot: %v&#34;, certFixturePath, keyFixturePath, err)
+                }
+<span style="color:#f92672">-               maxAge = 100 * time.Hour * 24 * 365 // 100 years fixtures
+</span><span style="color:#f92672"></span><span style="color:#a6e22e">+               maxAge = duration365d * longYear // 100 years fixtures
+</span><span style="color:#a6e22e"></span>        }
+ 
+        caKey, err := rsa.GenerateKey(cryptorand.Reader, 2048)
+</code></pre></div><h2 id="2-修改服务证书有效期">2. 修改服务证书有效期</h2>
+<p>修改<code>cmd/kubeadm/app/util/pkiutil/pki_helpers.go</code>中使用的变量<code>kubeadmconstants.CertificateValidity</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">	<span style="color:#ae81ff">certTmpl := x509.Certificate{</span>
+		<span style="color:#f92672">Subject</span>: <span style="color:#ae81ff">pkix.Name{</span>
+			<span style="color:#f92672">CommonName</span>:   <span style="color:#ae81ff">cfg.CommonName,</span>
+			<span style="color:#f92672">Organization</span>: <span style="color:#ae81ff">cfg.Organization,</span>
+		},
+		<span style="color:#f92672">DNSNames</span>:     <span style="color:#ae81ff">cfg.AltNames.DNSNames,</span>
+		<span style="color:#f92672">IPAddresses</span>:  <span style="color:#ae81ff">cfg.AltNames.IPs,</span>
+		<span style="color:#f92672">SerialNumber</span>: <span style="color:#ae81ff">serial,</span>
+		<span style="color:#f92672">NotBefore</span>:    <span style="color:#ae81ff">caCert.NotBefore,</span>
+		<span style="color:#f92672">NotAfter</span>:     <span style="color:#ae81ff">time.Now().Add(kubeadmconstants.CertificateValidity).UTC(),</span>
+		<span style="color:#f92672">KeyUsage</span>:     <span style="color:#ae81ff">x509.KeyUsageKeyEncipherment | x509.KeyUsageDigitalSignature,</span>
+		<span style="color:#f92672">ExtKeyUsage</span>:  <span style="color:#ae81ff">cfg.Usages,</span>
+	}
+</code></pre></div><p>该变量定义在<code>cmd/kubeadm/app/constants/constants.go</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-diff" data-lang="diff">diff --git a/cmd/kubeadm/app/constants/constants.go b/cmd/kubeadm/app/constants/constants.go
+index 2e3f4c9..768cf70 100644
+<span style="color:#f92672">--- a/cmd/kubeadm/app/constants/constants.go
+</span><span style="color:#f92672"></span><span style="color:#a6e22e">+++ b/cmd/kubeadm/app/constants/constants.go
+</span><span style="color:#a6e22e"></span><span style="color:#75715e">@@ -46,7 +46,7 @@ const (
+</span><span style="color:#75715e"></span>        TempDirForKubeadm = &#34;tmp&#34;
+ 
+        // CertificateValidity defines the validity for all the signed certificates generated by kubeadm
+<span style="color:#f92672">-       CertificateValidity = time.Hour * 24 * 365
+</span><span style="color:#f92672"></span><span style="color:#a6e22e">+       CertificateValidity = time.Hour * 24 * 365 * 100
+</span><span style="color:#a6e22e"></span> 
+        // CACertAndKeyBaseName defines certificate authority base name
+        CACertAndKeyBaseName = &#34;ca&#34;
+</code></pre></div><h2 id="3-修改kube-controller-manager---cluster-signing-duration">3. 修改kube-controller-manager &ndash;cluster-signing-duration</h2>
+<p>kube-controller-manager的<code>--cluster-signing-duration</code>参数控制每次给kubelet颁发证书的有效期，默认值为<code>8760h0m0s</code>，也即1年。</p>
+<blockquote>
+<p>&ndash;cluster-signing-duration duration     Default: 8760h0m0s
+The length of duration signed certificates will be given.</p>
+</blockquote>
+<p>可以在使用kubeadm初始化时配置kube-controllermanager参数，或初始化之后修改manifests的方式，修改<code>--cluster-signing-duration</code>值为<code>876000h</code>。</p>
+<h2 id="4-验证">4. 验证</h2>
+<p>最后验证一下，通过<code>make all WHAT=cmd/kubeadm GOFLAGS=-v</code>编译kubeadm。
+使用新的kubeadm初始化或重新生成集群证书（执行<code>kubeadm certs renew all</code>不能更新CA）进行证书更新。
+再次查看证书：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">CERTIFICATE                EXPIRES                  RESIDUAL TIME   CERTIFICATE AUTHORITY   EXTERNALLY MANAGED
+admin.conf                 Jun 05, <span style="color:#ae81ff">2121</span> 09:18 UTC   99y                                     no
+apiserver                  Jun 05, <span style="color:#ae81ff">2121</span> 09:32 UTC   99y             ca                      no
+apiserver-etcd-client      Jun 05, <span style="color:#ae81ff">2121</span> 09:32 UTC   99y             etcd-ca                 no
+apiserver-kubelet-client   Jun 05, <span style="color:#ae81ff">2121</span> 09:32 UTC   99y             ca                      no
+controller-manager.conf    Jun 05, <span style="color:#ae81ff">2121</span> 09:18 UTC   99y                                     no
+etcd-healthcheck-client    Jun 05, <span style="color:#ae81ff">2121</span> 09:32 UTC   99y             etcd-ca                 no
+etcd-peer                  Jun 05, <span style="color:#ae81ff">2121</span> 09:32 UTC   99y             etcd-ca                 no
+etcd-server                Jun 05, <span style="color:#ae81ff">2121</span> 09:32 UTC   99y             etcd-ca                 no
+front-proxy-client         Jun 05, <span style="color:#ae81ff">2121</span> 09:32 UTC   99y             front-proxy-ca          no
+scheduler.conf             Jun 05, <span style="color:#ae81ff">2121</span> 09:18 UTC   99y                                     no
+
+CERTIFICATE AUTHORITY   EXPIRES                  RESIDUAL TIME   EXTERNALLY MANAGED
+ca                      Jun 05, <span style="color:#ae81ff">2121</span> 09:32 UTC   99y             no
+etcd-ca                 Jun 05, <span style="color:#ae81ff">2121</span> 09:32 UTC   99y             no
+front-proxy-ca          Jun 05, <span style="color:#ae81ff">2121</span> 09:32 UTC   99y             no
+</code></pre></div><p>100年证书稳如老狗！！</p>
+
+
+
+      
+        <div class="blog-tags">
+          
+            <a
+              href="https://xiaosuiba.github.io/tags/kubernetes/"
+              >kubernetes</a
+            >&nbsp;
+          
+            <a
+              href="https://xiaosuiba.github.io/tags/kubeadm/"
+              >kubeadm</a
+            >&nbsp;
+          
+            <a
+              href="https://xiaosuiba.github.io/tags/certificate/"
+              >certificate</a
+            >&nbsp;
+          
+            <a
+              href="https://xiaosuiba.github.io/tags/code/"
+              >code</a
+            >&nbsp;
+          
+        </div>
+      
+    </article>
+    
+    
+      
+
+    
+  </div>
+
+    <footer>
+  
+
+<div class="social-icons">
+  
+    
+    
+      
+      <a href="https://twitter.com/xiaosuiba" name="Twitter">
+        <em class="fab fa-twitter"></em>
+      </a>
+    
+       &nbsp;&ndash;&nbsp;
+      <a href="https://github.com/xiaosuiba" name="GitHub">
+        <em class="fab fa-github"></em>
+      </a>
+    
+  
+
+  
+</div>
+
+
+  
+  <div class="container">
+    <p class="credits copyright">
+      <a href="https://xiaosuiba.github.io/about">Chris Li</a>
+      &nbsp;&copy;
+      2021
+      
+        &nbsp;/&nbsp;
+        <a href="https://xiaosuiba.github.io/">ChrisLi&#39;s Blog</a>
+      
+      &nbsp;&ndash;&nbsp;
+      <em class="fas fa-moon" id="dark-mode-toggle"></em>
+    </p>
+
+    <p class="credits theme-by">
+      Powered By <a href="https://gohugo.io">Hugo</a>&nbsp;
+      Theme
+      <a href="https://github.com/matsuyoshi30/harbor">Harbor</a>
+    </p>
+  </div>
+</footer>
+
+  </body>
+</html>
